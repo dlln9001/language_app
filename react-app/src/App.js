@@ -1,11 +1,9 @@
 import './index.css'
+import LandingPage from './components/landing-page/LandingPage';
 
 function App() {
   return (
-    <div className='bg-red-500'>
-        Hello
-        <p className=' text-red-500'>Hello</p>
-    </div>
+    <LandingPage />
   );
 }
 
