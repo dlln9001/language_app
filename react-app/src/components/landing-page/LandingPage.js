@@ -1,7 +1,12 @@
+import { useState } from "react";
+import MoreOptions from "./MoreOptions";
 import { IoIosArrowDown } from "react-icons/io";
+import { IoIosArrowUp } from "react-icons/io";
 
 
 function LandingPage() {
+    const [showMoreOptions, setShowMoreOptions] = useState(false)
+
     return (
         <div className="flex flex-col items-center">
             <div className="flex items-center gap-3 m-2 self-start">
@@ -34,14 +39,22 @@ function LandingPage() {
                     </div>
                 </div>
                 
-                <div className="flex items-center gap-2 self-start mt-4 md:text-lg hover:cursor-pointer">
-                    <p>More options</p> 
-                    <IoIosArrowDown />
+                <div className="self-start w-full">
+                    <div className="flex items-center gap-2 mt-4 md:text-lg hover:cursor-pointer" onClick={() => setShowMoreOptions(!showMoreOptions)}>
+                        <p>More options</p> 
+                        {showMoreOptions
+                        ? <IoIosArrowUp />
+                        : <IoIosArrowDown />
+                        }
+                    </div>
+
+                    {showMoreOptions && <MoreOptions />}
+
                 </div>
 
                 <button className="bg-teal-700 text-stone-50 rounded-md w-full py-1 md:py-2 md:text-lg mt-10 font-semibold hover:bg-teal-800">Generate Story</button>
 
-                <p placeholder="こんにちは！" className=" bg-stone-50 self-start mt-4 text-lg md:text-2xl w-full h-full mb-24">こんにちは！</p>
+                <p className=" bg-stone-50 self-start mt-4 text-lg md:text-2xl w-full h-full mb-24">こんにちは！</p>
             </div>
         </div> 
     )
