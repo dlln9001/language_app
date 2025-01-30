@@ -1,9 +1,23 @@
 import { useState } from "react";
+import { useEffect } from "react";
+import { useRef } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { CiCircleInfo } from "react-icons/ci";
 
 function MoreOptions() {
     const [furigana, setFurigana] = useState(true)
+    const [showNameInfo, setShowNameInfo] = useState(false)
+    const nameInfoRef = useRef(null)
+
+    useEffect(() => {
+        document.addEventListener('click', handleDocumentClick)
+    }, [])
+
+    function handleDocumentClick(e) {
+        if (nameInfoRef.current && !nameInfoRef.current.contains(e.target)) {
+            setShowNameInfo(false)
+        }
+    }
 
     return (
         <div className="w-full">
@@ -19,11 +33,21 @@ function MoreOptions() {
 
             <div className=" mt-3 w-full">
                 <p className=" text-sm mb-1">Main Characters Name</p>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 relative">
                     <input type="text" placeholder="Enter name..." className="border border-slate-300 rounded-md text-sm px-2 py-1 w-2/3 outline-none bg-stone-50"/>
-                    <div className=" text-lg cursor-pointer">
+                    <div className=" text-lg cursor-pointer" 
+                        onClick={() => setShowNameInfo(!showNameInfo)} 
+                        ref={nameInfoRef}
+                        onMouseEnter={() => setShowNameInfo(true)}
+                        onMouseLeave={() => setShowNameInfo(false)}
+                        >
                         <CiCircleInfo />
                     </div>
+                    {showNameInfo &&
+                        <div className=" bg-slate-800 text-stone-50 rounded-md p-2 absolute top-8 right-0 z-10">
+                            <p className=" text-xs">The main character's name will be used in the story</p>
+                        </div>
+                    }
                 </div>
             </div>
 
