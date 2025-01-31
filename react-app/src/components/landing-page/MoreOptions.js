@@ -11,6 +11,9 @@ function MoreOptions() {
     const nameInfoRef = useRef(null)
     const [name, setName] = useState("")
 
+    // Allows letters, numbers, spaces, hyphens, and apostrophes
+    const NameWhitelist = /^[a-zA-Z0-9\s'-]+$/;
+
     useEffect(() => {
         document.addEventListener('click', handleDocumentClick)
 
@@ -34,9 +37,18 @@ function MoreOptions() {
             <div className=" mt-3 w-full">
                 <p className=" text-sm mb-1 md:text-base">Main Characters Name</p>
                 <div className="flex items-center gap-2 relative">
-                    <input type="text" placeholder="Enter name..." className="border border-slate-300 rounded-md text-sm px-2 py-1 w-2/3 outline-none bg-stone-50 md:text-base"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}/>
+                    <div className="relative w-2/3">
+                        <input type="text" placeholder="Enter name..." className="border border-slate-300 rounded-md text-sm px-2 py-1 w-full outline-none bg-stone-50 md:text-base"
+                                value={name}
+                                onChange={(e) => {
+                                    if (e.target.value.length <= 25 && NameWhitelist.test(e.target.value) || e.target.value === "") {
+                                        setName(e.target.value)
+                                    }
+                                }}/>
+                        {name.length === 25 &&
+                            <p className="absolute text-xs right-0 text-red-500">Name too long</p>
+                        }
+                    </div>
 
                     <div className=" text-lg cursor-pointer" 
                         onClick={() => setShowNameInfo(!showNameInfo)} 
