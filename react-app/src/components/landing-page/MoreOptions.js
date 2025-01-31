@@ -11,6 +11,10 @@ function MoreOptions() {
 
     useEffect(() => {
         document.addEventListener('click', handleDocumentClick)
+
+        return () => {
+            document.removeEventListener('click', handleDocumentClick)
+        }
     }, [])
 
     function handleDocumentClick(e) {
@@ -38,8 +42,6 @@ function MoreOptions() {
                     <div className=" text-lg cursor-pointer" 
                         onClick={() => setShowNameInfo(!showNameInfo)} 
                         ref={nameInfoRef}
-                        onMouseEnter={() => setShowNameInfo(true)}
-                        onMouseLeave={() => setShowNameInfo(false)}
                         >
                         <CiCircleInfo />
                     </div>
