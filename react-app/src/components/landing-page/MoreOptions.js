@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useEffect } from "react";
 import { useRef } from "react";
-import { IoIosArrowDown } from "react-icons/io";
 import { CiCircleInfo } from "react-icons/ci";
+import GenreDropdown from "./GenreDropdown";
 
 function MoreOptions() {
     const [furigana, setFurigana] = useState(true)
@@ -26,13 +26,7 @@ function MoreOptions() {
     return (
         <div className="w-full">
             <div className=" mt-3 w-full">
-                <p className=" text-sm mb-1 md:text-base">Select Genre</p>
-                <div className="border border-slate-300 rounded-md text-sm px-2 py-1 w-2/3 flex items-center md:text-base">
-                    <p>Random</p>
-                    <div className=" ml-auto mr-2">
-                        <IoIosArrowDown />
-                    </div>
-                </div>
+                <GenreDropdown />
             </div>
 
             <div className=" mt-3 w-full">

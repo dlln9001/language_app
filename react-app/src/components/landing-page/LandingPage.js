@@ -74,7 +74,7 @@ function LandingPage() {
                 </div>
                 
                 <div className="self-start w-full">
-                    <div className="flex items-center gap-2 mt-4 md:text-lg hover:cursor-pointer" onClick={() => setShowMoreOptions(!showMoreOptions)}>
+                    <div className="flex items-center gap-2 mt-4 md:text-lg hover:cursor-pointer w-fit" onClick={() => setShowMoreOptions(!showMoreOptions)}>
                         <p>More options</p> 
                         {showMoreOptions
                         ? <IoIosArrowUp />
