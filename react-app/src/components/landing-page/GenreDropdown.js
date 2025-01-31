@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useRef } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 
+
 function GenreDropdown() {
     const [showDropdown, setShowDropdown] = useState(false)
     const dropdownRef = useRef(null)
