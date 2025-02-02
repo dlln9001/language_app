@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useEffect } from "react";
 import DOMPurify from 'dompurify';
 import { marked } from 'marked';
 import MoreOptions from "./MoreOptions";
@@ -8,9 +9,23 @@ import { IoIosArrowUp } from "react-icons/io";
 
 function LandingPage() {
     const [showMoreOptions, setShowMoreOptions] = useState(false)
-    const [difficulty, setDifficulty] = useState("N5")
-    const [length, setLength] = useState("Short")
+    const [difficulty, setDifficulty] = useState("")
+    const [length, setLength] = useState("")
     const [response, setResponse] = useState("こんにちは！")
+
+
+    useEffect(() => {
+        if (!localStorage.getItem('storySettings')) {
+            localStorage.setItem('storySettings', JSON.stringify({difficulty: "N5", length: "Short", genre: "Random", charactersName: "", furigana: true}))
+            setDifficulty("N5")
+            setLength("Short")
+        }
+        else {
+            const settings = JSON.parse(localStorage.getItem('storySettings'))
+            setDifficulty(settings.difficulty)
+            setLength(settings.length)
+        }
+    }, [])
 
 
     function generateStory() {
@@ -26,6 +41,18 @@ function LandingPage() {
             const clean_response = DOMPurify.sanitize(parsed_response)
             setResponse(clean_response)
         })
+    }
+
+    function setSettings(level, type) {
+        const settings = JSON.parse(localStorage.getItem('storySettings'))
+        settings[type] = level
+        localStorage.setItem('storySettings', JSON.stringify(settings))
+        if (type === "difficulty") {
+            setDifficulty(level)
+        }
+        else if (type === "length") { 
+            setLength(level)
+        }
     }
 
     
@@ -50,19 +77,19 @@ function LandingPage() {
                         <button 
                             className={`border-2 border-y-0 border-transparent border-r-teal-700 h-full w-1/3  
                                      ${difficulty === "N5" ? "bg-teal-700 text-stone-50" : "hover:bg-stone-100 rounded-l-md"}`} 
-                            onClick={() => setDifficulty("N5")}>
+                            onClick={() => setSettings("N5", "difficulty")}>
                             Entry (N5)
                         </button>
 
                         <button 
                             className={`border-2 border-y-0 border-transparent border-r-teal-700 h-full w-1/3  
                                      ${difficulty === "N4" ? "bg-teal-700 text-stone-50" : "hover:bg-stone-100"}`} 
-                            onClick={() => setDifficulty("N4")}>
+                            onClick={() => setSettings("N4", "difficulty")}>
                             Beginner (N4)
                         </button>
 
                         <button className={`w-1/3 ${difficulty === "N3" ? "bg-teal-700 text-stone-50" : "hover:bg-stone-100 rounded-r-md"}`}
-                                onClick={() => setDifficulty("N3")}>
+                                onClick={() => setSettings("N3", "difficulty")}>
                             Intermediate (N3)
                         </button>
                     </div>
@@ -75,19 +102,19 @@ function LandingPage() {
                         <button 
                             className={`border-2 border-y-0 border-transparent border-r-teal-700 h-full w-1/3  
                                      ${length === "Short" ? "bg-teal-700 text-stone-50" : "hover:bg-stone-100 rounded-l-md"}`} 
-                            onClick={() => setLength("Short")}>
+                            onClick={() => setSettings("Short", "length")}>
                             Short
                         </button>
 
                         <button 
                             className={`border-2 border-y-0 border-transparent border-r-teal-700 h-full w-1/3  
                                      ${length === "Medium" ? "bg-teal-700 text-stone-50" : "hover:bg-stone-100"}`} 
-                            onClick={() => setLength("Medium")}>
+                            onClick={() => setSettings("Medium", "length")}>
                             Medium
                         </button>
 
                         <button className={`w-1/3 ${length === "Long" ? "bg-teal-700 text-stone-50" : "hover:bg-stone-100 rounded-r-md"}`}
-                                onClick={() => setLength("Long")}>
+                                onClick={() => setSettings("Long", "length")}>
                             Long
                         </button>
                     </div>

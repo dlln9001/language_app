@@ -7,10 +7,15 @@ import { IoIosArrowDown } from "react-icons/io";
 function GenreDropdown() {
     const [showDropdown, setShowDropdown] = useState(false)
     const dropdownRef = useRef(null)
-    const [genre, setGenre] = useState("Random")
+    const [genre, setGenre] = useState("")
 
     useEffect(() => {
         document.addEventListener('click', handleDocumentClick)
+
+        if(localStorage.getItem('storySettings')) {
+            const settings = JSON.parse(localStorage.getItem('storySettings'))
+            setGenre(settings.genre)
+        }
 
         return () => {
             document.removeEventListener('click', handleDocumentClick)
@@ -21,6 +26,13 @@ function GenreDropdown() {
         if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
             setShowDropdown(false)
         }
+    }
+
+    function setGenreSettings(genre) {
+        const settings = JSON.parse(localStorage.getItem('storySettings'))
+        settings['genre'] = genre
+        localStorage.setItem('storySettings', JSON.stringify(settings))
+        setGenre(genre)
     }
 
     return (
@@ -38,11 +50,11 @@ function GenreDropdown() {
                     </div>
                     {showDropdown &&
                         <div className="absolute bg-stone-50 border border-slate-300 mt-1 w-full rounded-md z-10 shadow-xl">
-                            <p className=" text-sm px-2 py-2 hover:bg-stone-100 cursor-pointer rounded-t-md" onClick={() => setGenre('Random')}>Random</p>
-                            <p className=" text-sm px-2 py-2 hover:bg-stone-100 cursor-pointer" onClick={() => setGenre('Slice of Life')}>Slice of Life</p>
-                            <p className=" text-sm px-2 py-2 hover:bg-stone-100 cursor-pointer" onClick={() => setGenre('Adventure')}>Adventure</p>
-                            <p className=" text-sm px-2 py-2 hover:bg-stone-100 cursor-pointer" onClick={() => setGenre('Silly')}>Silly</p>
-                            <p className=" text-sm px-2 py-2 hover:bg-stone-100 cursor-pointer rounded-b-md" onClick={() => setGenre('Mystery')}>Mystery</p>
+                            <p className=" text-sm px-2 py-2 hover:bg-stone-100 cursor-pointer rounded-t-md" onClick={() => setGenreSettings('Random')}>Random</p>
+                            <p className=" text-sm px-2 py-2 hover:bg-stone-100 cursor-pointer" onClick={() => setGenreSettings('Slice of Life')}>Slice of Life</p>
+                            <p className=" text-sm px-2 py-2 hover:bg-stone-100 cursor-pointer" onClick={() => setGenreSettings('Adventure')}>Adventure</p>
+                            <p className=" text-sm px-2 py-2 hover:bg-stone-100 cursor-pointer" onClick={() => setGenreSettings('Silly')}>Silly</p>
+                            <p className=" text-sm px-2 py-2 hover:bg-stone-100 cursor-pointer rounded-b-md" onClick={() => setGenreSettings('Mystery')}>Mystery</p>
                         </div>
                     }
                 </div>
