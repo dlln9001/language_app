@@ -1,4 +1,6 @@
 import { useState } from "react";
+import DOMPurify from 'dompurify';
+import { marked } from 'marked';
 import MoreOptions from "./MoreOptions";
 import { IoIosArrowDown } from "react-icons/io";
 import { IoIosArrowUp } from "react-icons/io";
@@ -8,7 +10,25 @@ function LandingPage() {
     const [showMoreOptions, setShowMoreOptions] = useState(false)
     const [difficulty, setDifficulty] = useState("N5")
     const [length, setLength] = useState("Short")
+    const [response, setResponse] = useState("こんにちは！")
 
+
+    function generateStory() {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/story-generator/generate-story/`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            let parsed_response = marked.parse(data.response)
+            const clean_response = DOMPurify.sanitize(parsed_response)
+            setResponse(clean_response)
+        })
+    }
+
+    
     return (
         <div className="flex flex-col items-center">
             <div className="flex items-center gap-3 m-2 self-start">
@@ -86,9 +106,17 @@ function LandingPage() {
 
                 </div>
 
-                <button className="bg-teal-700 text-stone-50 rounded-md w-full py-1 md:py-2 md:text-lg md:mt-14 mt-10 font-semibold hover:bg-teal-800">Generate Story</button>
+                <button 
+                    className="bg-teal-700 text-stone-50 rounded-md w-full py-1 md:py-2 md:text-lg md:mt-14 mt-10 font-semibold hover:bg-teal-800"
+                    onClick={generateStory}>
+                        Generate Story
+                </button>
 
-                <p className=" bg-stone-50 self-start mt-4 text-lg md:text-2xl w-full h-full mb-24">こんにちは！</p>
+                <p 
+                    className=" bg-stone-50 self-start mt-4 text-lg md:text-2xl w-full h-full mb-24"
+                    dangerouslySetInnerHTML={{__html: response}}>
+                        
+                </p>
             </div>
         </div> 
     )

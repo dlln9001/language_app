@@ -41,7 +41,7 @@ function MoreOptions() {
                         <input type="text" placeholder="Enter name..." className="border border-slate-300 rounded-md text-sm px-2 py-1 w-full outline-none bg-stone-50 md:text-base"
                                 value={name}
                                 onChange={(e) => {
-                                    if (e.target.value.length <= 25 && NameWhitelist.test(e.target.value) || e.target.value === "") {
+                                    if ((e.target.value.length <= 25 && NameWhitelist.test(e.target.value)) || e.target.value === "") {
                                         setName(e.target.value)
                                     }
                                 }}/>
