@@ -33,7 +33,10 @@ function LandingPage() {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
-            }
+            },
+            body: JSON.stringify({
+                story_settings: JSON.parse(localStorage.getItem('storySettings'))
+            })
         })
         .then(res => res.json())
         .then(data => {
@@ -88,7 +91,7 @@ function LandingPage() {
                             Beginner (N4)
                         </button>
 
-                        <button className={`w-1/3 ${difficulty === "N3" ? "bg-teal-700 text-stone-50" : "hover:bg-stone-100 rounded-r-md"}`}
+                        <button className={`w-[33.5%] ${difficulty === "N3" ? "bg-teal-700 text-stone-50 " : "hover:bg-stone-100 rounded-r-md"}`}
                                 onClick={() => setSettings("N3", "difficulty")}>
                             Intermediate (N3)
                         </button>
@@ -113,7 +116,7 @@ function LandingPage() {
                             Medium
                         </button>
 
-                        <button className={`w-1/3 ${length === "Long" ? "bg-teal-700 text-stone-50" : "hover:bg-stone-100 rounded-r-md"}`}
+                        <button className={`w-[33.5%] ${length === "Long" ? "bg-teal-700 text-stone-50" : "hover:bg-stone-100 rounded-r-md"}`}
                                 onClick={() => setSettings("Long", "length")}>
                             Long
                         </button>
