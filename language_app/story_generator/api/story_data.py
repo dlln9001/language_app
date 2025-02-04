@@ -19,7 +19,139 @@ general_themes = [
 'Making a New Friend', 'Exploring a New Shop', 'Going to a Festival Game', 'Trying a New Japanese Snack', 'Visiting a Local Park Festival (Simplified)',
 'Seeing Street Performers (Simple)', 'Helping an Elderly Person (Simple Act)', 'Getting Lost and Finding the Way Back (Simplified)', 'Sharing Lunch with Classmates',
 'Exchanging Small Gifts with Friends', "Autumn Leaves in Japan", "Cherry Blossoms", "Summer Fireworks", "Winter Illuminations in Japan",
+
+# --- More Emotional Range ---
+'Quiet Reflection', 'Peaceful Moment', 'Gentle Rain', 'Silly Mistake', 'Funny Surprise', 'Unexpected Laughter', 'Small Mystery', 'Hidden Message', 'Unexplained Event',
+
+# --- More Action/Activity Focused Themes ---
+'Building Something Together', 'Organizing an Event', 'Participating in a Contest', 'Preparing for a Trip', 'Having a Practice Session', 'Trying a New Recipe', 'Making Music',
+
+# --- More "Learning" Focused Themes ---
+'Learning a New Japanese Word', 'Practicing Japanese Greetings', 'Trying to Read Japanese', 'Asking for Help in Japanese', 'Understanding Japanese Customs', 
+'Learning about Japanese Culture', 'Studying for a Test (simple)',
+
+# --- More "Cultural Exploration" Themes ---
+'Visiting a Japanese Garden', 'Trying Japanese Calligraphy (Shodo)', 'Learning about Japanese Tea', 'Exploring a Japanese Neighborhood', 
+'Visiting a Local Japanese Market', 'Trying on a Kimono/Yukata', 'Seeing a Sumo Match (simplified)',
+
+# --- More "Problem-Solving" or "Mini-Challenge" Themes ---
+'Finding a Way Home', 'Fixing Something Broken', 'Making a Decision', 'Waiting Patiently', 'Helping a Lost Pet', 'Cleaning up a Mess', 'Sharing a Toy',
 ]
+
+
+story_settings_locations = [
+    # --- Home/Indoor Settings ---
+    "in a cozy living room",
+    "in a quiet bedroom",
+    "in a bright kitchen",
+    "in a small dining room",
+    "in a sunny garden",
+    "on a balcony overlooking the city",
+    "in a hallway of a house",
+    "in a home office",
+    "in a child's playroom",
+    "in a garage filled with tools",
+    "in a traditional Japanese tatami room (washitsu)",
+    "in a modern apartment living room",
+    "in a cluttered attic",
+    "in a spacious veranda",
+    "in a basement that is a bit dark",
+    "in a comfortable study room",
+    "inside a walk-in closet",
+    "in a brightly lit sunroom",
+    "in a pantry filled with food",
+    "in a laundry room with the washing machine running",
+    "at a friends house"
+
+    # --- School/Work Settings ---
+    "in a classroom at school",
+    "in the school hallway",
+    "in the school library",
+    "in the school cafeteria",
+    "on the school playground",
+    "in a teacher's office",
+    "in an art room filled with paintings",
+    "in a music room with instruments",
+    "in a science lab with beakers and tubes",
+    "in a gymnasium during basketball practice",
+    "in a quiet corner of the library",
+    "in a busy office cubicle",
+    "in a conference room during a meeting",
+    "in a break room at work",
+    "in a reception area of an office",
+    "in a design studio with computers",
+    "in a workshop with tools and wood",
+    "in a small office overlooking a street",
+    "in a large, open-plan office",
+    "in a recording studio with microphones",
+
+    # --- Outdoor/Nature Settings ---
+    "in a park filled with trees",
+    "in a flower garden",
+    "by a small pond",
+    "on a forest path",
+    "on a sandy beach",
+    "by the ocean waves",
+    "on a grassy hill",
+    "under a large cherry blossom tree (sakura)",
+    "in a bamboo grove",
+    "near a flowing river",
+    "in a quiet corner of a large park",
+    "on a playground with swings and slides",
+    "in a vegetable garden",
+    "in a field of tall grass",
+    "on a mountain trail",
+    "by a waterfall",
+    "in a clearing in the woods",
+    "on a rocky coastline",
+    "in a field of sunflowers",
+    "under a starry night sky",
+
+    # --- Commercial/Town Settings ---
+    "in a bustling supermarket",
+    "in a quiet bookstore",
+    "in a small local cafe",
+    "in a busy train station",
+    "on a crowded shopping street",
+    "in a quiet residential street",
+    "in a traditional Japanese sweets shop (wagashiya)",
+    "in a ramen shop",
+    "in a sushi restaurant",
+    "in a bakery with the smell of fresh bread",
+    "in a clothing store with colorful clothes",
+    "in a toy store filled with games",
+    "in a small neighborhood park",
+    "at a bus stop waiting for the bus",
+    "in a movie theater lobby",
+    "at an ice cream shop",
+    "in a flower shop filled with bouquets",
+    "in a stationery store with pens and paper",
+    "at a fruit and vegetable stand",
+    "in a busy town square",
+
+    # --- Japanese Specific Settings (Cultural/Unique) ---
+    "at a Shinto shrine (jinja)",
+    "at a Buddhist temple (tera/o-tera)",
+    "at a summer festival (matsuri) with food stalls",
+    "at a fireworks festival (hanabi taikai)",
+    "in a traditional Japanese garden (nihon teien)",
+    "in a hot spring bath (onsen)",
+    "in a public bathhouse (sento)",
+    "on a bullet train (shinkansen)",
+    "at a traditional tea ceremony (chanoyu/sado)",
+    "in a karaoke box",
+    "at a fish market",
+    "in an anime/manga store",
+    "at a cherry blossom viewing party (hanami)",
+    "at a Tanabata festival with decorations",
+    "at a Bon Odori dance festival",
+    "at a local shopping arcade (shotengai)",
+    "in a pachinko parlor (noisy and bright)",
+    "at a vending machine corner",
+    "in a capsule hotel",
+    "at a countryside rice field",
+]
+
 
 starting_situations = [
     # --- Sensory Start (Focus on perception) ---
