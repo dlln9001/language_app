@@ -6,6 +6,7 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 import google.generativeai as genai
 from .story_data import *
+from .blacklist import blacklist
 
 load_dotenv()
 
@@ -16,7 +17,9 @@ def generate_story(request):
 
     random_names = random.sample(all_japanese_names, 4)
 
-    if story_settings['charactersName'] == '':
+    if story_settings['charactersName'].lower() in blacklist:
+        character_name = 'John Doe'
+    elif story_settings['charactersName'] == '':
         character_name = random.choice(all_japanese_names)
     else:
         character_name = story_settings['charactersName']

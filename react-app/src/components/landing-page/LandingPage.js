@@ -16,12 +16,12 @@ function LandingPage() {
     const [length, setLength] = useState("")
     const [response, setResponse] = useState("こんにちは！")
 
-    const levels = ["PRE-N5 (~500 most common words)", "N5", "N4"]
+    const levels = ["PRE-N5 (~300-500 most common words)", "N5", "N4"]
 
     useEffect(() => {
         if (!localStorage.getItem('storySettings')) {
-            localStorage.setItem('storySettings', JSON.stringify({difficulty: "N5", length: "Short", genre: "Random", charactersName: "", furigana: true}))
-            setDifficulty("N5")
+            localStorage.setItem('storySettings', JSON.stringify({difficulty: levels[0], length: "Short", genre: "Random", charactersName: "", furigana: true}))
+            setDifficulty(levels[0])
             setLength("Short")
         }
         else {
