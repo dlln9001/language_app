@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { useEffect } from "react";
+
 import DOMPurify from 'dompurify';
 import { marked } from 'marked';
+
 import MoreOptions from "./MoreOptions";
+
 import { IoIosArrowDown } from "react-icons/io";
 import { IoIosArrowUp } from "react-icons/io";
 
@@ -13,6 +16,7 @@ function LandingPage() {
     const [length, setLength] = useState("")
     const [response, setResponse] = useState("こんにちは！")
 
+    const levels = ["PRE-N5 (~500 most common words)", "N5", "N4"]
 
     useEffect(() => {
         if (!localStorage.getItem('storySettings')) {
@@ -43,6 +47,7 @@ function LandingPage() {
             let parsed_response = marked.parse(data.response)
             const clean_response = DOMPurify.sanitize(parsed_response)
             setResponse(clean_response)
+            console.log(clean_response)
         })
     }
 
@@ -78,22 +83,22 @@ function LandingPage() {
 
                     <div className="border-2 border-teal-700 rounded-md w-full h-8 md:h-10 text-xs md:text-base text-teal-700 flex">
                         <button 
-                            className={`border-2 border-y-0 border-transparent border-r-teal-700 h-full w-1/3  
-                                     ${difficulty === "N5" ? "bg-teal-700 text-stone-50" : "hover:bg-stone-100 rounded-l-md"}`} 
-                            onClick={() => setSettings("N5", "difficulty")}>
-                            Entry (N5)
+                            className={`border-2 border-y-0 border-transparent border-r-teal-700 h-full flex-grow basis-0 border-l-0
+                                     ${difficulty === levels[0] ? "bg-teal-700 text-stone-50" : "hover:bg-stone-100 rounded-l-md"}`} 
+                            onClick={() => setSettings(levels[0], "difficulty")}>
+                            Entry
                         </button>
 
                         <button 
-                            className={`border-2 border-y-0 border-transparent border-r-teal-700 h-full w-1/3  
-                                     ${difficulty === "N4" ? "bg-teal-700 text-stone-50" : "hover:bg-stone-100"}`} 
-                            onClick={() => setSettings("N4", "difficulty")}>
-                            Beginner (N4)
+                            className={`border-2 border-y-0 border-transparent border-r-teal-700 h-full flex-grow basis-0
+                                     ${difficulty === levels[1] ? "bg-teal-700 text-stone-50" : "hover:bg-stone-100"}`} 
+                            onClick={() => setSettings(levels[1], "difficulty")}>
+                            Beginner
                         </button>
 
-                        <button className={`w-[33.5%] ${difficulty === "N3" ? "bg-teal-700 text-stone-50 " : "hover:bg-stone-100 rounded-r-md"}`}
-                                onClick={() => setSettings("N3", "difficulty")}>
-                            Intermediate (N3)
+                        <button className={`flex-grow basis-0 ${difficulty === levels[2] ? "bg-teal-700 text-stone-50 " : "hover:bg-stone-100 rounded-r-md"}`}
+                                onClick={() => setSettings(levels[2], "difficulty")}>
+                            Low Intermediate
                         </button>
                     </div>
                 </div>
@@ -103,20 +108,20 @@ function LandingPage() {
 
                     <div className="border-2 border-teal-700 rounded-md w-full h-8 md:h-10 text-xs md:text-base text-teal-700 flex">
                         <button 
-                            className={`border-2 border-y-0 border-transparent border-r-teal-700 h-full w-1/3  
+                            className={`border-2 border-y-0 border-transparent border-r-teal-700 h-full flex-grow basis-0
                                      ${length === "Short" ? "bg-teal-700 text-stone-50" : "hover:bg-stone-100 rounded-l-md"}`} 
                             onClick={() => setSettings("Short", "length")}>
                             Short
                         </button>
 
                         <button 
-                            className={`border-2 border-y-0 border-transparent border-r-teal-700 h-full w-1/3  
+                            className={`border-2 border-y-0 border-transparent border-r-teal-700 h-full flex-grow basis-0 
                                      ${length === "Medium" ? "bg-teal-700 text-stone-50" : "hover:bg-stone-100"}`} 
                             onClick={() => setSettings("Medium", "length")}>
                             Medium
                         </button>
 
-                        <button className={`w-[33.5%] ${length === "Long" ? "bg-teal-700 text-stone-50" : "hover:bg-stone-100 rounded-r-md"}`}
+                        <button className={`flex-grow basis-0 ${length === "Long" ? "bg-teal-700 text-stone-50" : "hover:bg-stone-100 rounded-r-md"}`}
                                 onClick={() => setSettings("Long", "length")}>
                             Long
                         </button>
@@ -141,7 +146,6 @@ function LandingPage() {
                     onClick={generateStory}>
                         Generate Story
                 </button>
-
                 <p 
                     className=" bg-stone-50 self-start mt-4 text-lg md:text-2xl w-full h-full mb-24"
                     dangerouslySetInnerHTML={{__html: response}}>

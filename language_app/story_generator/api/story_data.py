@@ -361,7 +361,6 @@ starting_situations = [
     "The character realizes they are carrying an extra umbrella, even though they only own one.",
     "The character finds that their favorite mug is in a place it shouldn't be.",
     "The character notices that a plant in their house has suddenly started blooming out of season.",
-
 ]
 
 

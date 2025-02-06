@@ -44,10 +44,11 @@ def generate_story(request):
     genai.configure(api_key=gemini_api_key)
 
     model = genai.GenerativeModel(
-        model_name="gemini-1.5-flash",
-        system_instruction="You are only telling a story only in Japanese, no other languages will ever be used for any purpose.")
-    
-
+        model_name="gemini-2.0-flash",
+        system_instruction="""You are only telling a story only in Japanese, no other languages will ever be used for any purpose, 
+                              do not translate it. Only output the story, nothing else, not even the variables you choose, such as genre, theme, etc. Only the story itself.""")
+        
+        
     print(genre, random_theme, random_names, random_starting_situation, random_locations)
     prompt = f"""Generate a short story in Japanese for language learners at the JLPT {story_settings['difficulty']} level, 
                 never go higher in difficulty than {story_settings['difficulty']}, use kanji, don't provide furigana.
