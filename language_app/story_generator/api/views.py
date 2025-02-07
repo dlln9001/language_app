@@ -17,6 +17,11 @@ def generate_story(request):
 
     random_names = random.sample(all_japanese_names, 4)
 
+    if story_settings['kana']:
+        kana_or_kanji = 'use only kana (hiragana or katakana) for all words, do not use any kanji at all. Even for names'
+    else:
+        kana_or_kanji = "use kanji, don't provide furigana."
+
     if story_settings['charactersName'].lower() in blacklist:
         character_name = 'John Doe'
     elif story_settings['charactersName'] == '':
@@ -54,7 +59,7 @@ def generate_story(request):
         
     print(genre, random_theme, random_names, random_starting_situation, random_locations)
     prompt = f"""Generate a short story in Japanese for language learners at the JLPT {story_settings['difficulty']} level, 
-                never go higher in difficulty than {story_settings['difficulty']}, use kanji, don't provide furigana.
+                never go higher in difficulty than {story_settings['difficulty']}, {kana_or_kanji}.
                 Please choose one genre from this list of genres: {genre}.
                 Please choose one theme from this list of themes: {random_theme}.
                 Please choose one location from this list of locations: {random_locations}.
@@ -71,7 +76,8 @@ def generate_story(request):
                 please introduce them in a way that makes it clear who they are and how they relate to the main character.
                 When referring to characters, please use appropriate Japanese honorific suffixes after their names.
                 Strive for natural and contextually reasonable honorific usage.
-                Make names bolded everytime a name shows up. Please write the character's name in Kanji (if a standard Kanji representation exists), otherwise in Hiragana or Katakana.
+                Make names bolded everytime a name shows up. Please write the character's name in Kanji (if a standard Kanji representation exists), 
+                otherwise in Hiragana or Katakana.
                 """
     print(prompt)
 

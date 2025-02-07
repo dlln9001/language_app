@@ -6,7 +6,7 @@ import { CiCircleInfo } from "react-icons/ci";
 
 
 function MoreOptions() {
-    const [furigana, setFurigana] = useState('loading')
+    const [kana, setKana] = useState('loading')
     const [showNameInfo, setShowNameInfo] = useState(false)
     const nameInfoRef = useRef(null)
     const [name, setName] = useState("")
@@ -20,7 +20,7 @@ function MoreOptions() {
         if (localStorage.getItem('storySettings')) {
             const settings = JSON.parse(localStorage.getItem('storySettings'))
             setName(settings.charactersName)
-            setFurigana(settings.furigana)
+            setKana(settings.kana)
         }
 
         return () => {
@@ -36,7 +36,7 @@ function MoreOptions() {
 
     return (
         <div className="w-full">
-            { furigana !== 'loading' &&
+            { kana !== 'loading' &&
             <>
                 <div className=" mt-3 w-full">
                     <GenreDropdown />
@@ -77,16 +77,16 @@ function MoreOptions() {
                 </div>
 
                 <div className=" mt-3 w-full">
-                    <p className=" text-sm mb-1 md:text-base">Furigana</p>
+                    <p className=" text-sm mb-1 md:text-base">Read in Kana (no kanji)</p>
 
-                    <div className={`transition ${furigana ? `bg-teal-700` : `bg-stone-400`} duration-500 rounded-full p-1 w-12 flex cursor-pointer`} 
+                    <div className={`transition ${kana ? `bg-teal-700` : `bg-stone-400`} duration-500 rounded-full p-1 w-12 flex cursor-pointer`} 
                         onClick={() => {
-                            setFurigana(!furigana)
+                            setKana(!kana)
                             let storySettings = JSON.parse(localStorage.getItem('storySettings'))
-                            storySettings['furigana'] = !furigana
+                            storySettings['kana'] = !kana
                             localStorage.setItem('storySettings', JSON.stringify(storySettings))
                             }}>
-                        <div className={`h-5 w-5 rounded-full bg-stone-50 transition duration-500 ${furigana ? ` translate-x-full` : `translate-x-0`}`}></div>
+                        <div className={`h-5 w-5 rounded-full bg-stone-50 transition duration-500 ${kana ? ` translate-x-full` : `translate-x-0`}`}></div>
                     </div>
                     
                 </div>

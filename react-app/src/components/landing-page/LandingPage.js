@@ -20,7 +20,8 @@ function LandingPage() {
 
     useEffect(() => {
         if (!localStorage.getItem('storySettings')) {
-            localStorage.setItem('storySettings', JSON.stringify({difficulty: levels[0], length: "Short", genre: "Random", charactersName: "", furigana: true}))
+            // all default settings
+            localStorage.setItem('storySettings', JSON.stringify({difficulty: levels[0], length: "Short", genre: "Random", charactersName: "", kana: false}))
             setDifficulty(levels[0])
             setLength("Short")
         }
