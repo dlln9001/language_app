@@ -67,7 +67,8 @@ def generate_story(request):
                 You must include {character_name} as a character in the story. Use name exactly. 
                 If you want to include additional characters beyond {character_name}, 
                 You can optionally use names from this list: {random_names}. Only add extra characters if it naturally fits the story and enhances engagement.  
-                For very short stories, it's often best to keep the number of characters limited to maintain focus.
+                For very short stories, it's often best to keep the number of characters limited to maintain focus. If new characters are added to the story, 
+                please introduce them in a way that makes it clear who they are and how they relate to the main character.
                 When referring to characters, please use appropriate Japanese honorific suffixes after their names.
                 Strive for natural and contextually reasonable honorific usage.
                 Make names bolded everytime a name shows up. Please write the character's name in Kanji (if a standard Kanji representation exists), otherwise in Hiragana or Katakana.
