@@ -6,3 +6,13 @@ services:
     container_name: language-app-backend
     ports:
       - "8000:8000"
+    
+  nginx:
+    build: 
+      context: . 
+      dockerfile: ./nginx/Dockerfile
+    container_name: language-app-nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
