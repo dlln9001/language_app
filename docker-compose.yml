@@ -6,6 +6,8 @@ services:
     container_name: language-app-backend
     ports:
       - "8000:8000"
+    env_file:
+      - ./language_app/.env
     
   nginx:
     build: 
@@ -16,3 +18,5 @@ services:
       - "80:80"
     depends_on:
       - backend
+    env_file:
+      - ./react-app/.env
