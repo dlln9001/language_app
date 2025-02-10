@@ -1,0 +1,37 @@
+services:
+  backend:
+    image: us-central1-docker.pkg.dev/language-app-449523/language-app-docker/language_app_backend:latest
+    container_name: language-app-backend
+    env_file:
+      - ./django/.env
+
+  nginx:
+    image: us-central1-docker.pkg.dev/language-app-449523/language-app-docker/language_app_nginx:latest
+    container_name: language-app-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - backend
+    env_file:
+      - ./react-app/.env
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://127.0.0.1:80 || exit 1"]
+      interval: 1m30s
+      timeout: 20s
+      retries: 5
+      start_period: 30s
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    depends_on:
+      - nginx
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    command: certonly --webroot -w /var/www/certbot --force-renewal --email dfcross18@gmail.com -d storylingoai.ddns.net --agree-tos
