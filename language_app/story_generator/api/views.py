@@ -17,16 +17,15 @@ def generate_story(request):
 
     random_names = random.sample(all_japanese_names, 4)
 
-    blacklist = os.getenv('BLACKLIST')
-
     if story_settings['kana']:
         kana_or_kanji = 'use only kana (hiragana or katakana) for all words, do not use any kanji at all. Even for names'
     else:
         kana_or_kanji = "use kanji, don't provide furigana."
 
-    if story_settings['charactersName'].lower() in blacklist:
-        character_name = 'John Doe'
-    elif story_settings['charactersName'] == '':
+    # if story_settings['charactersName'].lower() in blacklist:
+    #     character_name = 'John Doe'
+    
+    if story_settings['charactersName'] == '':
         character_name = random.choice(all_japanese_names)
     else:
         character_name = story_settings['charactersName']
