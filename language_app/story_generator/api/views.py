@@ -17,6 +17,8 @@ def generate_story(request):
 
     random_names = random.sample(all_japanese_names, 4)
 
+    blacklist = os.getenv('BLACKLIST')
+
     if story_settings['kana']:
         kana_or_kanji = 'use only kana (hiragana or katakana) for all words, do not use any kanji at all. Even for names'
     else:
