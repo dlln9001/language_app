@@ -6,7 +6,7 @@ from rest_framework.decorators import api_view
 from rest_framework import status
 import google.generativeai as genai
 from .story_data import *
-from .blacklist import blacklist
+# from .blacklist import blacklist
 
 load_dotenv()
 
