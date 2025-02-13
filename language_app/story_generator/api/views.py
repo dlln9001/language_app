@@ -20,7 +20,7 @@ def generate_story(request):
     if story_settings['kana']:
         kana_or_kanji = 'use only kana (hiragana or katakana) for all words, do not use any kanji at all. Even for names'
     else:
-        kana_or_kanji = "use kanji, don't provide furigana."
+        kana_or_kanji = "use kanji, don't provide furigana. Remember different difficulty levels have different kanji requirements"
 
     # if story_settings['charactersName'].lower() in blacklist:
     #     character_name = 'John Doe'
@@ -55,7 +55,7 @@ def generate_story(request):
     model = genai.GenerativeModel(
         model_name="gemini-2.0-flash",
         system_instruction="""You are only telling a story only in Japanese, no other languages will ever be used for any purpose, 
-                              do not translate it. Only output the story, nothing else, not even the variables you choose, such as genre, theme, etc. Only the story itself.""")
+                              do not translate it. Only output the story, nothing else, not even the settings you choose. Only the story itself.""")
         
         
     print(genre, random_theme, random_names, random_starting_situation, random_locations)
@@ -77,8 +77,9 @@ def generate_story(request):
                 please introduce them in a way that makes it clear who they are and how they relate to the main character.
                 When referring to characters, please use appropriate Japanese honorific suffixes after their names.
                 Strive for natural and contextually reasonable honorific usage.
-                Make names bolded everytime a name shows up. Please write the character's name in Kanji (if a standard Kanji representation exists), 
-                otherwise in Hiragana or Katakana.
+                Make names bolded everytime a name shows up. Please write the character's name in hiragana, do not use kanji for names.
+                Again, please only provide the Japanese story text, and do not include any genre, theme, location, 
+                or other descriptive information before or after the story. Just the story text in Japanese
                 """
     print(prompt)
 
