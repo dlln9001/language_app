@@ -5,10 +5,23 @@ import DOMPurify from 'dompurify';
 import { marked } from 'marked';
 
 import MoreOptions from "./MoreOptions";
+import DifficultyOptions from "./DifficultyOptions";
 
 import { IoIosArrowDown } from "react-icons/io";
 import { IoIosArrowUp } from "react-icons/io";
 
+
+export function setSettings(level, type, setDifficulty, setLength) {
+    const settings = JSON.parse(localStorage.getItem('storySettings'))
+    settings[type] = level
+    localStorage.setItem('storySettings', JSON.stringify(settings))
+    if (type === "difficulty") {
+        setDifficulty(level)
+    }
+    else if (type === "length") { 
+        setLength(level)
+    }
+}
 
 function LandingPage() {
     const [showMoreOptions, setShowMoreOptions] = useState(false)
@@ -58,18 +71,6 @@ function LandingPage() {
         })
     }
 
-    function setSettings(level, type) {
-        const settings = JSON.parse(localStorage.getItem('storySettings'))
-        settings[type] = level
-        localStorage.setItem('storySettings', JSON.stringify(settings))
-        if (type === "difficulty") {
-            setDifficulty(level)
-        }
-        else if (type === "length") { 
-            setLength(level)
-        }
-    }
-
     
     return (
         <div className="flex flex-col items-center">
@@ -92,26 +93,11 @@ function LandingPage() {
                 <div className="mt-3 w-full flex flex-col items-center gap-2 md:mt-8">
                     <p className=" font-semibold md:text-lg">Difficulty</p>
 
-                    <div className="border-2 border-teal-700 rounded-md w-full h-8 md:h-10 text-xs md:text-base text-teal-700 flex">
-                        <button 
-                            className={`border-2 border-y-0 border-transparent border-r-teal-700 h-full flex-grow basis-0 border-l-0
-                                     ${difficulty === levels[0] ? "bg-teal-700 text-stone-50" : "hover:bg-stone-100 rounded-l-md"}`} 
-                            onClick={() => setSettings(levels[0], "difficulty")}>
-                            Entry
-                        </button>
-
-                        <button 
-                            className={`border-2 border-y-0 border-transparent border-r-teal-700 h-full flex-grow basis-0
-                                     ${difficulty === levels[1] ? "bg-teal-700 text-stone-50" : "hover:bg-stone-100"}`} 
-                            onClick={() => setSettings(levels[1], "difficulty")}>
-                            Beginner
-                        </button>
-
-                        <button className={`flex-grow basis-0 ${difficulty === levels[2] ? "bg-teal-700 text-stone-50 " : "hover:bg-stone-100 rounded-r-md"}`}
-                                onClick={() => setSettings(levels[2], "difficulty")}>
-                            Low Intermediate
-                        </button>
-                    </div>
+                    <DifficultyOptions 
+                        difficulty={difficulty} 
+                        setDifficulty={setDifficulty} 
+                        levels={levels} 
+                        setLength={setLength}/>
                 </div>
 
                 <div className="mt-3 w-full flex flex-col items-center gap-2">
