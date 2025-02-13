@@ -44,3 +44,5 @@ jobs:
           file: ./nginx/Dockerfile
           push: true
           tags: us-central1-docker.pkg.dev/language-app-449523/language-app-docker/language_app_nginx
+          build-args:
+            REACT_APP_API_BASE_URL=${{ secrets.REACT_APP_API_BASE_URL }}
