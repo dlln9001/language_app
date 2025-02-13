@@ -6,6 +6,7 @@ import { marked } from 'marked';
 
 import MoreOptions from "./MoreOptions";
 import DifficultyOptions from "./DifficultyOptions";
+import LengthOptions from "./LengthOptions";
 
 import { IoIosArrowDown } from "react-icons/io";
 import { IoIosArrowUp } from "react-icons/io";
@@ -98,31 +99,17 @@ function LandingPage() {
                         setDifficulty={setDifficulty} 
                         levels={levels} 
                         setLength={setLength}/>
+
                 </div>
 
                 <div className="mt-3 w-full flex flex-col items-center gap-2">
                     <p className=" font-semibold md:text-lg">Length</p>
 
-                    <div className="border-2 border-teal-700 rounded-md w-full h-8 md:h-10 text-xs md:text-base text-teal-700 flex">
-                        <button 
-                            className={`border-2 border-y-0 border-transparent border-r-teal-700 h-full flex-grow basis-0
-                                     ${length === "Short" ? "bg-teal-700 text-stone-50" : "hover:bg-stone-100 rounded-l-md"}`} 
-                            onClick={() => setSettings("Short", "length")}>
-                            Short
-                        </button>
+                    <LengthOptions
+                        setDifficulty={setDifficulty}
+                        length={length}
+                        setLength={setLength}/>
 
-                        <button 
-                            className={`border-2 border-y-0 border-transparent border-r-teal-700 h-full flex-grow basis-0 
-                                     ${length === "Medium" ? "bg-teal-700 text-stone-50" : "hover:bg-stone-100"}`} 
-                            onClick={() => setSettings("Medium", "length")}>
-                            Medium
-                        </button>
-
-                        <button className={`flex-grow basis-0 ${length === "Long" ? "bg-teal-700 text-stone-50" : "hover:bg-stone-100 rounded-r-md"}`}
-                                onClick={() => setSettings("Long", "length")}>
-                            Long
-                        </button>
-                    </div>
                 </div>
                 
                 <div className="self-start w-full">
