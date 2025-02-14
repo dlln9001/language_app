@@ -169,7 +169,9 @@ function LandingPage() {
                     <div className={`text-xl md:text-2xl ${isPlaying ? 'text-teal-700' : 'text-stone-600'}`} onClick={() =>{
                         if (isPlaying) {
                             setIsPlaying(false)
-                            setAudioURL('')
+                        }
+                        else if (audioURL) {
+                            setIsPlaying(true)
                         }
                         else {
                             generateAudio()
@@ -177,7 +179,7 @@ function LandingPage() {
                         }}>
                         <HiMiniSpeakerWave />
                     </div>
-                    {audioURL &&
+                    {(audioURL && isPlaying) &&
                         <div>
                             <audio src={audioURL} type="audio/mpeg" autoPlay onEnded={() => setIsPlaying(false)}></audio>
                         </div>
@@ -187,7 +189,10 @@ function LandingPage() {
 
                 <button 
                     className="bg-teal-700 text-stone-50 rounded-md w-full py-1 md:py-2 md:mt-6 mt-4 md:text-lg font-semibold hover:bg-teal-800"
-                    onClick={generateStory}>
+                    onClick={() => {
+                        generateStory()
+                        setAudioURL('')
+                    }}>
                         Generate Story
                 </button>
 

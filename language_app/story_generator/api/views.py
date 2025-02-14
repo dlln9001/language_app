@@ -3,6 +3,7 @@ import random
 from dotenv import load_dotenv
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from django.http import StreamingHttpResponse
 from django.http import FileResponse
 from rest_framework import status
 
@@ -105,13 +106,15 @@ def generate_audio(request):
         return Response({'status': 'Text is required'}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
-        tts = gTTS(text=text, lang='ja') # You can customize language here
-        mp3_fp = io.BytesIO() # Create an in-memory file-like object
-        tts.write_to_fp(mp3_fp)
-        mp3_fp.seek(0) # Reset file pointer to the beginning
+        tts = gTTS(text=text, lang='ja') # Or your desired language
 
-        response = FileResponse(mp3_fp, content_type='audio/mpeg')
-        response['Content-Disposition'] = 'inline; filename="speech.mp3"'
+        audio_stream = tts.stream() # Directly use gTTS stream generator
+
+        response = StreamingHttpResponse(
+            audio_stream, # Pass the gTTS stream generator directly
+            content_type='audio/mpeg'
+        )
+        response['Content-Disposition'] = 'inline; filename="speech_stream.mp3"' # Optional
         return response
 
     except Exception as e:
