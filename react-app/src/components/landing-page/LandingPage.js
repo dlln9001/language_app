@@ -32,6 +32,9 @@ function LandingPage() {
     const [response, setResponse] = useState("こんにちは！")
     const [loadingPrompt, setLoadingPrompt] = useState(false)
 
+    const [audioURL, setAudioURL] = useState("")
+    const [isPlaying, setIsPlaying] = useState(false)
+
     const levels = ["PRE-N5 (~300-500 most common words)", "N5", "N4"]
 
     useEffect(() => {
@@ -73,19 +76,40 @@ function LandingPage() {
         })
     }
 
+    function extractTextFromHTML(htmlString) {
+        const tempElement = document.createElement('div'); // Create a temporary div
+        tempElement.innerHTML = htmlString;             // Set the HTML content
+        return tempElement.textContent || tempElement.innerText || ""; // Get textContent or innerText
+    }
+
 
     function generateAudio() {
+
+        const plainText = extractTextFromHTML(response) // 'response' has html tags, so need to remove them first
+
         fetch(`${process.env.REACT_APP_API_BASE_URL}/story-generator/generate-audio/`, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                text: response
+                text: plainText
             })
         })
-        .then(res => res.json())
-        .then(data => console.log(data))
+        .then(res => {
+            if (res.status !== 200) { 
+                throw new Error(`error!`);
+            }
+            return res.blob(); // Get the response body as a Blob
+        })
+        .then(blob => {
+            const url = URL.createObjectURL(blob); // Create URL from Blob
+            setAudioURL(url) // Set the audio URL state
+            setIsPlaying(true)
+        })
+        .catch(error => { 
+            console.error("Error generating audio:", error);
+        });
     }
 
     
@@ -142,13 +166,27 @@ function LandingPage() {
                 </div>
 
                 <button className="mt-12 self-start">
-                    <div className=" text-stone-600 text-xl" onClick={generateAudio}>
+                    <div className={`text-xl md:text-2xl ${isPlaying ? 'text-teal-700' : 'text-stone-600'}`} onClick={() =>{
+                        if (isPlaying) {
+                            setIsPlaying(false)
+                            setAudioURL('')
+                        }
+                        else {
+                            generateAudio()
+                        }
+                        }}>
                         <HiMiniSpeakerWave />
                     </div>
+                    {audioURL &&
+                        <div>
+                            <audio src={audioURL} type="audio/mpeg" autoPlay onEnded={() => setIsPlaying(false)}></audio>
+                        </div>
+
+                    }
                 </button>
 
                 <button 
-                    className="bg-teal-700 text-stone-50 rounded-md w-full py-1 md:py-2 mt-4 md:text-lg md:mt-14 font-semibold hover:bg-teal-800"
+                    className="bg-teal-700 text-stone-50 rounded-md w-full py-1 md:py-2 md:mt-6 mt-4 md:text-lg font-semibold hover:bg-teal-800"
                     onClick={generateStory}>
                         Generate Story
                 </button>

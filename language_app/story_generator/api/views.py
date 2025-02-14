@@ -3,8 +3,13 @@ import random
 from dotenv import load_dotenv
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from django.http import FileResponse
 from rest_framework import status
+
 import google.generativeai as genai
+from gtts import gTTS
+import io
+
 from .story_data import *
 # from .blacklist import blacklist
 
@@ -94,5 +99,20 @@ def generate_story(request):
 
 @api_view(['POST'])
 def generate_audio(request):
-    print(request.data)
-    return Response({"status": "success"}, status=status.HTTP_200_OK)
+    text = request.data.get('text')  # Get text from request body
+
+    if not text:
+        return Response({'status': 'Text is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        tts = gTTS(text=text, lang='ja') # You can customize language here
+        mp3_fp = io.BytesIO() # Create an in-memory file-like object
+        tts.write_to_fp(mp3_fp)
+        mp3_fp.seek(0) # Reset file pointer to the beginning
+
+        response = FileResponse(mp3_fp, content_type='audio/mpeg')
+        response['Content-Disposition'] = 'inline; filename="speech.mp3"'
+        return response
+
+    except Exception as e:
+        return Response({'status': f'Error generating audio'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
