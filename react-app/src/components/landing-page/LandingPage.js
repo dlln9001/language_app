@@ -10,6 +10,7 @@ import LengthOptions from "./LengthOptions";
 
 import { IoIosArrowDown } from "react-icons/io";
 import { IoIosArrowUp } from "react-icons/io";
+import { HiMiniSpeakerWave } from "react-icons/hi2";
 
 
 export function setSettings(level, type, setDifficulty, setLength) {
@@ -72,6 +73,21 @@ function LandingPage() {
         })
     }
 
+
+    function generateAudio() {
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/story-generator/generate-audio/`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                text: response
+            })
+        })
+        .then(res => res.json())
+        .then(data => console.log(data))
+    }
+
     
     return (
         <div className="flex flex-col items-center">
@@ -125,8 +141,14 @@ function LandingPage() {
 
                 </div>
 
+                <button className="mt-12 self-start">
+                    <div className=" text-stone-600 text-xl" onClick={generateAudio}>
+                        <HiMiniSpeakerWave />
+                    </div>
+                </button>
+
                 <button 
-                    className="bg-teal-700 text-stone-50 rounded-md w-full py-1 md:py-2 md:text-lg md:mt-14 mt-10 font-semibold hover:bg-teal-800"
+                    className="bg-teal-700 text-stone-50 rounded-md w-full py-1 md:py-2 mt-4 md:text-lg md:mt-14 font-semibold hover:bg-teal-800"
                     onClick={generateStory}>
                         Generate Story
                 </button>

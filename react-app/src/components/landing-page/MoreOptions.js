@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useEffect } from "react";
 import { useRef } from "react";
+
 import GenreDropdown from "./GenreDropdown";
+
 import { CiCircleInfo } from "react-icons/ci";
 
 

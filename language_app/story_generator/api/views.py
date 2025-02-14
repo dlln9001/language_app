@@ -90,3 +90,9 @@ def generate_story(request):
         ))
 
     return Response({"status": "success", 'response': response.text}, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+def generate_audio(request):
+    print(request.data)
+    return Response({"status": "success"}, status=status.HTTP_200_OK)
