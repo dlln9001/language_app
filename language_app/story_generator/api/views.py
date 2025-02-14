@@ -106,7 +106,7 @@ def generate_audio(request):
         return Response({'status': 'Text is required'}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
-        tts = gTTS(text=text, lang='ja') # Or your desired language
+        tts = gTTS(text=text, lang='ja')
 
         audio_stream = tts.stream() # Directly use gTTS stream generator
 
@@ -114,7 +114,7 @@ def generate_audio(request):
             audio_stream, # Pass the gTTS stream generator directly
             content_type='audio/mpeg'
         )
-        response['Content-Disposition'] = 'inline; filename="speech_stream.mp3"' # Optional
+        response['Content-Disposition'] = 'inline; filename="speech_stream.mp3"'
         return response
 
     except Exception as e:
