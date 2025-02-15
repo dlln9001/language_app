@@ -35,6 +35,7 @@ function LandingPage() {
     const [audioURL, setAudioURL] = useState("")
     const [isPlaying, setIsPlaying] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
+    const [controller, setController] = useState('')
 
     const levels = ["PRE-N5 (~300-500 most common words)", "N5", "N4"]
 
@@ -87,6 +88,13 @@ function LandingPage() {
 
     function generateAudio(input_text) {
 
+        if (isLoading) {
+            controller.abort()
+        }
+
+        let temp_controller = new AbortController()
+        setController(temp_controller)
+
         const plainText = extractTextFromHTML(input_text) // 'input_text' has html tags, so need to remove them first
         setIsLoading(true)
 
@@ -97,7 +105,8 @@ function LandingPage() {
             },
             body: JSON.stringify({
                 text: plainText
-            })
+            }),
+            signal: temp_controller.signal
         })
         .then(res => {
             if (res.status !== 200) { 
@@ -108,10 +117,15 @@ function LandingPage() {
         .then(blob => {
             const url = URL.createObjectURL(blob) // Create URL from Blob
             setAudioURL(url) // Set the audio URL state
+            setController('')
             setIsLoading(false)
         })
         .catch(error => { 
-            console.error("Error generating audio:", error)
+            if (error.name === 'AbortError') {
+                console.log("Fetch aborted by user.");
+            } else {
+                console.error("Error generating audio:", error)
+            }
         })
     }
 
