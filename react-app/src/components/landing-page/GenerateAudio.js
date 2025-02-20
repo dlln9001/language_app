@@ -9,17 +9,21 @@ export function extractTextFromHTML(htmlString) {
     return tempElement.textContent || tempElement.innerText || ""; // Get textContent or innerText
 }
 
-export function generateAudio(input_text, setController, controller, setAudioURL, setIsLoading, isLoading) {
+export function generateAudio(input_text, setController, controller, audioPlayerRef, setIsLoading, isLoading, setAudioURL) {
 
     if (isLoading) {
         controller.abort()
     }
 
+    setIsLoading(true)
     let temp_controller = new AbortController()
     setController(temp_controller)
 
     const plainText = extractTextFromHTML(input_text) // 'input_text' has html tags, so need to remove them first
-    setIsLoading(true)
+
+    const mediaSource = new MediaSource()
+    audioPlayerRef.current.src = URL.createObjectURL(mediaSource)
+    setAudioURL(true)
 
     fetch(`${process.env.REACT_APP_API_BASE_URL}/story-generator/generate-audio/`, {
         method: "POST",
@@ -35,13 +39,38 @@ export function generateAudio(input_text, setController, controller, setAudioURL
         if (res.status !== 200) { 
             throw new Error(`error!`);
         }
-        return res.blob(); // Get the response body as a Blob
-    })
-    .then(blob => {
-        const url = URL.createObjectURL(blob) // Create URL from Blob
-        setAudioURL(url) // Set the audio URL state
-        setController('')
-        setIsLoading(false)
+
+        try {
+            let sourceBuffer = mediaSource.addSourceBuffer('audio/mpeg'); 
+
+            const reader = res.body.getReader()
+
+            function readChunk() {
+                reader.read().then(({ done, value }) => {
+                    if (done) {
+                        mediaSource.endOfStream()
+                        return
+                    }
+    
+                    sourceBuffer.appendBuffer(value)
+                    setIsLoading(false)
+    
+                    return readChunk()
+                })
+            }
+    
+            readChunk()
+            .then(setController(''))
+            .catch(error => {
+                console.error('Stream reading error:', error);
+                reader.cancel(); // Cancel the stream on error
+                })
+
+
+        } catch (error) {
+            console.error("Error adding source buffer:", error);
+        }
+
     })
     .catch(error => { 
         if (error.name === 'AbortError') {
@@ -52,22 +81,23 @@ export function generateAudio(input_text, setController, controller, setAudioURL
     })
 }
 
-
 function GenerateAudio(props) {    
     const audioValues = useAudioValues()
-
     return (
         <>
-        <div className={`text-2xl md:text-2xl w-4 h-4 ${audioValues.isPlaying ? 'text-teal-700' : 'text-stone-600'}`} onClick={() =>{
+        <div className={`text-2xl md:text-2xl w-4 h-4 ${(audioValues.isPlaying && audioValues.audioURL) ? 'text-teal-700' : 'text-stone-600'}`} onClick={() =>{
             if (audioValues.isPlaying) {
                 audioValues.setIsPlaying(false)
+                audioValues.audioPlayerRef.current.pause()
             }
             else if (audioValues.audioURL) {
                 audioValues.setIsPlaying(true)
+                audioValues.audioPlayerRef.current.play()
             }
-            else if (!audioValues.audioURL && !audioValues.isLoading) {
-                generateAudio(props.response, audioValues.setController, audioValues.controller, audioValues.setAudioURL, audioValues.setIsLoading, audioValues.isLoading)
+             if (!audioValues.isLoading && !audioValues.audioURL) {
                 audioValues.setIsPlaying(true)
+                generateAudio(props.response, audioValues.setController, audioValues.controller, audioValues.audioPlayerRef, 
+                            audioValues.setIsLoading, audioValues.isLoading, audioValues.setAudioURL)
             }
             }}>
             {audioValues.isLoading 
@@ -83,13 +113,13 @@ function GenerateAudio(props) {
             <HiMiniSpeakerWave />
             }
         </div>
+        
 
-        {(audioValues.audioURL && audioValues.isPlaying) &&
-            <div>
-                <audio src={audioValues.audioURL} type="audio/mpeg" autoPlay onEnded={() => audioValues.setIsPlaying(false)}></audio>
-            </div>
-
-        }
+        <div>
+            <audio src='' type="audio/mpeg" autoPlay onEnded={() => audioValues.setIsPlaying(false)} id="audioplayer" ref={audioValues.audioPlayerRef}></audio>
+        </div>
+        
+        
         </>
     )
 }

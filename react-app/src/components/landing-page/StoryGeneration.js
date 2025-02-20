@@ -34,7 +34,8 @@ function StoryGeneration() {
             let parsed_response = marked.parse(data.response)
             const clean_response = DOMPurify.sanitize(parsed_response)
             setResponse(clean_response)
-            generateAudio(clean_response, audioValues.setController, audioValues.controller, audioValues.setAudioURL, audioValues.setIsLoading, audioValues.isLoading)
+            generateAudio(clean_response, audioValues.setController, audioValues.controller, 
+                        audioValues.audioPlayerRef, audioValues.setIsLoading, audioValues.isLoading, audioValues.setAudioURL)
             console.log(clean_response)
         })
     }
@@ -52,6 +53,8 @@ function StoryGeneration() {
                     if (!loadingPrompt) {
                         generateStory()
                         audioValues.setAudioURL('')
+                        audioValues.setIsPlaying(true)
+                        audioValues.audioPlayerRef.current.pause()
                     }
                 }}>
                     Generate Story
