@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 import { useAudioValues } from "../../contexts/AudioValuesContext";
 
 import { HiMiniSpeakerWave } from "react-icons/hi2";
@@ -48,7 +50,15 @@ export function generateAudio(input_text, setController, controller, audioPlayer
             function readChunk() {
                 reader.read().then(({ done, value }) => {
                     if (done) {
-                        mediaSource.endOfStream()
+                        if (!sourceBuffer.updating) { // Check if still updating as a precaution
+                            mediaSource.endOfStream()
+                        } else {
+                            // Wait for 'updateend' event to call endOfStream
+                            sourceBuffer.addEventListener('updateend', function endStreamHandler() {
+                                sourceBuffer.removeEventListener('updateend', endStreamHandler) // Clean up listener
+                                mediaSource.endOfStream()
+                            })
+                        }
                         return
                     }
     
@@ -60,7 +70,6 @@ export function generateAudio(input_text, setController, controller, audioPlayer
             }
     
             readChunk()
-            .then(setController(''))
             .catch(error => {
                 console.error('Stream reading error:', error);
                 reader.cancel(); // Cancel the stream on error
@@ -72,6 +81,7 @@ export function generateAudio(input_text, setController, controller, audioPlayer
         }
 
     })
+    .then(() => setController(''))
     .catch(error => { 
         if (error.name === 'AbortError') {
             console.log("Fetch aborted by user.");
@@ -83,6 +93,16 @@ export function generateAudio(input_text, setController, controller, audioPlayer
 
 function GenerateAudio(props) {    
     const audioValues = useAudioValues()
+
+    
+    useEffect(() => {
+        if (!audioValues.isLoading && !audioValues.audioURL) {
+            generateAudio(props.response, audioValues.setController, audioValues.controller, audioValues.audioPlayerRef, 
+                        audioValues.setIsLoading, audioValues.isLoading, audioValues.setAudioURL)
+        }
+    }, [])
+
+
     return (
         <>
         <div className={`text-2xl md:text-2xl w-4 h-4 ${(audioValues.isPlaying && audioValues.audioURL) ? 'text-teal-700' : 'text-stone-600'}`} onClick={() =>{
@@ -93,11 +113,6 @@ function GenerateAudio(props) {
             else if (audioValues.audioURL) {
                 audioValues.setIsPlaying(true)
                 audioValues.audioPlayerRef.current.play()
-            }
-             if (!audioValues.isLoading && !audioValues.audioURL) {
-                audioValues.setIsPlaying(true)
-                generateAudio(props.response, audioValues.setController, audioValues.controller, audioValues.audioPlayerRef, 
-                            audioValues.setIsLoading, audioValues.isLoading, audioValues.setAudioURL)
             }
             }}>
             {audioValues.isLoading 
@@ -116,7 +131,7 @@ function GenerateAudio(props) {
         
 
         <div>
-            <audio src='' type="audio/mpeg" autoPlay onEnded={() => audioValues.setIsPlaying(false)} id="audioplayer" ref={audioValues.audioPlayerRef}></audio>
+            <audio src='' type="audio/mpeg" ref={audioValues.audioPlayerRef} onEnded={() => {audioValues.setIsPlaying(false)}}  ></audio>
         </div>
         
         

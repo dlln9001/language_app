@@ -53,7 +53,7 @@ function StoryGeneration() {
                     if (!loadingPrompt) {
                         generateStory()
                         audioValues.setAudioURL('')
-                        audioValues.setIsPlaying(true)
+                        audioValues.setIsPlaying(false)
                         audioValues.audioPlayerRef.current.pause()
                     }
                 }}>
