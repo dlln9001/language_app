@@ -26,7 +26,8 @@ def generate_story(request):
     if story_settings['kana']:
         kana_or_kanji = 'use only kana (hiragana or katakana) for all words, do not use any kanji at all. Even for names'
     else:
-        kana_or_kanji = "use kanji, don't provide furigana. Remember different difficulty levels have different kanji requirements"
+        kana_or_kanji = """use kanji, don't provide furigana. Remember different difficulty levels have different kanji requirements. 
+                            And don't provide the hiragana in parenthesis after the kanji. The text you produce goes through a tts, and it will repeat the words."""
 
     # if story_settings['charactersName'].lower() in blacklist:
     #     character_name = 'John Doe'
@@ -60,8 +61,13 @@ def generate_story(request):
 
     model = genai.GenerativeModel(
         model_name="gemini-2.0-flash",
-        system_instruction="""You are only telling a story only in Japanese, no other languages will ever be used for any purpose, 
-                              do not translate it. Only output the story, nothing else, not even the settings you choose. Only the story itself.""")
+        system_instruction= """You are only telling a story only in Japanese, no other languages will ever be used for the story, 
+                                do not translate it. Also, at the very start of your response please generate the following in English to help 
+                                Japanese language learners understand the story:
+                                1. A short, clear title in English to indicate the story's topic and genre you chose.
+                                2. A brief (1-2 sentence) introductory paragraph in English to provide essential context and set the scene for beginner learners.
+                                Separate this context your providing at the start and the japanese story with the marker "%%%%". This is essential.
+                                """)
         
         
     print(genre, random_theme, random_names, random_starting_situation, random_locations)
@@ -84,8 +90,6 @@ def generate_story(request):
                 When referring to characters, please use appropriate Japanese honorific suffixes after their names, but don't use kanji for these suffixes.
                 Strive for natural and contextually reasonable honorific usage.
                 Make names bolded everytime a name shows up. Please write the character's name in hiragana, do not use kanji for names.
-                Again, please only provide the Japanese story text, and do not include any genre, theme, location, 
-                or other descriptive information before or after the story. Just the story text in Japanese
                 """
     print(prompt)
 

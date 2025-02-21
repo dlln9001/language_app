@@ -97,7 +97,7 @@ function GenerateAudio(props) {
     
     useEffect(() => {
         if (!audioValues.isLoading && !audioValues.audioURL) {
-            generateAudio(props.response, audioValues.setController, audioValues.controller, audioValues.audioPlayerRef, 
+            generateAudio(props.storyResponse, audioValues.setController, audioValues.controller, audioValues.audioPlayerRef, 
                         audioValues.setIsLoading, audioValues.isLoading, audioValues.setAudioURL)
         }
     }, [])

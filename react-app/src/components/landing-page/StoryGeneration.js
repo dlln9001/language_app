@@ -10,7 +10,8 @@ import GenerateAudio from "./GenerateAudio";
 
 function StoryGeneration() {
     const [loadingPrompt, setLoadingPrompt] = useState(false)
-    const [response, setResponse] = useState("こんにちは！")
+    const [response, setResponse] = useState('こんにちは！') // this response includes other information other just the story, but is the whole response
+    const [storyResponse, setStoryResponse] = useState('こんにちは！') // story response only includes the story, so this is sent to generate audio
 
     const audioValues = useAudioValues()
 
@@ -31,20 +32,38 @@ function StoryGeneration() {
         .then(res => res.json())
         .then(data => {
             setLoadingPrompt(false)
-            let parsed_response = marked.parse(data.response)
-            const clean_response = DOMPurify.sanitize(parsed_response)
-            setResponse(clean_response)
-            generateAudio(clean_response, audioValues.setController, audioValues.controller, 
+            let split_responses
+
+
+            split_responses = data.response.split('%%%%')
+
+            if (split_responses.length != 2) {
+                split_responses = ['Error parsing, wrong audio will be produced', data.response]
+            }
+
+            let context_response = marked.parse(split_responses[0])
+            let story_response = marked.parse(split_responses[1])
+
+            const clean_context_response = DOMPurify.sanitize(context_response)
+            const clean_story_response = DOMPurify.sanitize(story_response)
+
+            console.log(clean_context_response, clean_story_response)
+            
+            setStoryResponse(clean_story_response)
+            setResponse('<div class=text-base>' + clean_context_response + '</div>' +
+                '<hr class="my-5">' + 
+                clean_story_response)
+
+            generateAudio(clean_story_response, audioValues.setController, audioValues.controller, 
                         audioValues.audioPlayerRef, audioValues.setIsLoading, audioValues.isLoading, audioValues.setAudioURL)
-            console.log(clean_response)
         })
     }
-
+    console.log(response)
 
     return (
         <>
                 <button className="mt-12 self-start">
-                    <GenerateAudio response={response}/>
+                    <GenerateAudio storyResponse={storyResponse}/>
                 </button>
 
             <button 
