@@ -67,6 +67,7 @@ function StoryGeneration() {
 
             <button 
                 className="bg-teal-700 text-stone-50 rounded-md w-full py-1 md:py-2 mt-6 md:text-lg font-semibold hover:bg-teal-800"
+                id="generate-story-id"
                 onClick={() => {
                     if (!loadingPrompt) {
                         generateStory()

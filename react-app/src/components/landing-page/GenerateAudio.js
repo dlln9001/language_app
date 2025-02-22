@@ -105,7 +105,9 @@ function GenerateAudio(props) {
 
     return (
         <>
-        <div className={`text-2xl md:text-2xl w-4 h-4 ${(audioValues.isPlaying && audioValues.audioURL) ? 'text-teal-700' : 'text-stone-600'}`} onClick={() =>{
+        <div id="generate-audio-id" 
+            className={`text-2xl md:text-2xl w-4 h-4 ${(audioValues.isPlaying && audioValues.audioURL) ? 'text-teal-700' : 'text-stone-600'}`} 
+            onClick={() =>{
             if (audioValues.isPlaying) {
                 audioValues.setIsPlaying(false)
                 audioValues.audioPlayerRef.current.pause()
