@@ -34,7 +34,6 @@ function StoryGeneration() {
             setLoadingPrompt(false)
             let split_responses
 
-
             split_responses = data.response.split('%%%%')
 
             if (split_responses.length != 2) {
