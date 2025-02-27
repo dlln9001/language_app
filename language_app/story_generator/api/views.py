@@ -26,7 +26,7 @@ def generate_story(request):
     if story_settings['kana']:
         kana_or_kanji = 'use only kana (hiragana or katakana) for all words, do not use any kanji at all. Even for names'
     else:
-        kana_or_kanji = """use kanji, don't provide furigana. Remember different difficulty levels have different kanji requirements. 
+        kana_or_kanji = """use kanji, don't provide furigana. 
                             And don't provide the hiragana in parenthesis after the kanji. The text you produce goes through a tts, and it will repeat the words."""
 
     # if story_settings['charactersName'].lower() in blacklist:

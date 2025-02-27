@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useAudioValues } from "../../contexts/AudioValuesContext";
 
 import DOMPurify from 'dompurify';
@@ -10,7 +10,9 @@ import GenerateAudio from "./GenerateAudio";
 
 function StoryGeneration() {
     const [loadingPrompt, setLoadingPrompt] = useState(false)
-    const [response, setResponse] = useState('こんにちは！') // this response includes other information other just the story, but is the whole response
+    const [response, setResponse] = useState(`<p class="text-sm text-center md:text-base"> Highlight any Japanese word you don't know. Then, click the book icon to see its meaning! </p> 
+                                            <br />
+                                             こんにちは！`) // this response includes other information other just the story, but is the whole response
     const [storyResponse, setStoryResponse] = useState('こんにちは！') // story response only includes the story, so this is sent to generate audio
 
     const audioValues = useAudioValues()
@@ -78,14 +80,12 @@ function StoryGeneration() {
                 }}>
                     Generate Story
             </button>
-
             
-            <p 
-                className=" bg-stone-50 self-start mt-4 text-lg md:text-2xl w-full h-full mb-28"
+            <p  id='story-text-area'
+                className=" bg-stone-50 mt-4 text-lg md:text-2xl w-full h-full mb-40"
                 dangerouslySetInnerHTML={{__html: response}}>
-                    
             </p>
-            
+        
             {loadingPrompt && 
                 <div role="status">
                     <svg aria-hidden="true" className="w-12 h-12 text-gray-200 animate-spin dark:text-gray-300 fill-teal-700" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
