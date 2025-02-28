@@ -44,7 +44,7 @@ function LandingPage() {
     }, [])
     
     return (
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center overflow-x-hidden">
             <div className="flex items-center gap-3 m-2 self-start w-full">
                 <img src="/images/logos/main-logo.png" alt="" className="w-16 h-16 md:w-20 md:h-20"/>
                 <p className=" text-xl md:text-2xl">StoryLingoAI</p>
