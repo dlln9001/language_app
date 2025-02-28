@@ -4,6 +4,7 @@ import MoreOptions from "./MoreOptions";
 import DifficultyOptions from "./DifficultyOptions";
 import LengthOptions from "./LengthOptions";
 import StoryGeneration from "./StoryGeneration";
+import MenuOptions from "../menu-options/MenuOptions";
 
 import { IoIosArrowDown } from "react-icons/io";
 import { IoIosArrowUp } from "react-icons/io";
@@ -44,9 +45,10 @@ function LandingPage() {
     
     return (
         <div className="flex flex-col items-center">
-            <div className="flex items-center gap-3 m-2 self-start">
-                <img src="/images/logos/main-logo.png" alt="" className="w-20 h-20"/>
-                <p className=" text-2xl">StoryLingoAI</p>
+            <div className="flex items-center gap-3 m-2 self-start w-full">
+                <img src="/images/logos/main-logo.png" alt="" className="w-16 h-16 md:w-20 md:h-20"/>
+                <p className=" text-xl md:text-2xl">StoryLingoAI</p>
+                <MenuOptions/>
             </div>
 
             <hr className=" border-teal-700 w-full"/>
