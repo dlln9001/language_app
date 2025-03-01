@@ -7,8 +7,10 @@ function WordsListModal(props) {
     const [wordsList, setWordsList] = useState(JSON.parse(localStorage.getItem('storySettings')).wordsToLearn)
     const [forceUpdate, setForceUpdate] = useState(false)
 
+    const maxWords = 20
+
     function addWord() {
-        if (wordInputed) {
+        if (wordInputed && wordsList.length < maxWords) {
             let tempList = wordsList
             tempList.unshift(wordInputed)
             let storySettings = JSON.parse(localStorage.getItem('storySettings'))
@@ -42,11 +44,19 @@ function WordsListModal(props) {
                 <p className="text-center text-sm">Personalize your learning! Enter Japanese words you're studying. Stories will feature these words more often to help you practice</p>
 
                 <div className="w-full">
+                    {wordsList.length >= maxWords &&
+                        <p className="text-red-400 text-sm">max number of words reached</p>
+                    }
                     <input type="text" value={wordInputed} 
                         onChange={(e) => setWordInputed(e.target.value)}
                         placeholder="Enter word..."
                         className="border border-stone-300 bg-stone-50 rounded-md px-3 py-1 w-full outline-none focus:border-stone-400"/>
+                    {wordsList.length >= maxWords 
+                    ?
+                    <button className="bg-slate-200 text-slate-400 w-full mt-3 rounded-md py-1 disabled">Add to List</button>
+                    :
                     <button className="bg-teal-700 text-stone-50 w-full mt-3 rounded-md py-1" onClick={addWord}>Add to List</button>
+                    }
                 </div>
 
                 <div className="self-start w-full min-h-32 max-h-[50%] bg-stone-50">
