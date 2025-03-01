@@ -5,15 +5,28 @@ import { IoIosClose } from "react-icons/io";
 function WordsListModal(props) {
     const [wordInputed, setWordInputed] = useState('')
     const [wordsList, setWordsList] = useState(JSON.parse(localStorage.getItem('storySettings')).wordsToLearn)
+    const [forceUpdate, setForceUpdate] = useState(false)
 
     function addWord() {
+        if (wordInputed) {
+            let tempList = wordsList
+            tempList.unshift(wordInputed)
+            let storySettings = JSON.parse(localStorage.getItem('storySettings'))
+            storySettings.wordsToLearn = tempList
+            localStorage.setItem('storySettings', JSON.stringify(storySettings))
+            setWordsList(tempList)
+            setWordInputed('')
+        }
+    }
+
+    function removeWord(index) {
         let tempList = wordsList
-        tempList.push(wordInputed)
+        tempList.splice(index, 1)
         let storySettings = JSON.parse(localStorage.getItem('storySettings'))
         storySettings.wordsToLearn = tempList
         localStorage.setItem('storySettings', JSON.stringify(storySettings))
         setWordsList(tempList)
-        setWordInputed('')
+        setForceUpdate(!forceUpdate)
     }
 
     return (
@@ -31,19 +44,22 @@ function WordsListModal(props) {
                         className="border border-stone-300 bg-stone-50 rounded-md px-3 py-1 w-full outline-none focus:border-stone-400"/>
                     <button className="bg-teal-700 text-stone-50 w-full mt-3 rounded-md py-1" onClick={addWord}>Add to List</button>
                 </div>
-                <div className="self-start w-full">
+                <div className="self-start w-full h-full">
                     <p>Your List</p>
                     {wordsList 
-                    ? wordsList.map((word, index) => {
-                        return (
-                            <div key={index} className="flex items-center gap-3 mt-3 w-full">
-                                <p>{word}</p>
-                                <div className="cursor-pointer ml-auto">
-                                    <IoIosClose />
+                    ? 
+                    <div className="overflow-auto h-72 md:h-64 w-full">
+                        {wordsList.map((word, index) => {
+                            return (
+                                <div key={index} className="flex items-center gap-3 mt-3 w-full">
+                                    <p>{word}</p>
+                                    <div className="cursor-pointer ml-auto" onClick={() => removeWord(index)}>
+                                        <IoIosClose />
+                                    </div>
                                 </div>
-                            </div>
-                        )
-                    })
+                            )
+                        })}
+                    </div>
                     : 
                     <p className=" text-sm text-stone-400 mt-3">No words added yet...</p>
                     }
