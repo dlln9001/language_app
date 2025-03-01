@@ -6,10 +6,20 @@ function WordsListModal(props) {
     const [wordInputed, setWordInputed] = useState('')
     const [wordsList, setWordsList] = useState(JSON.parse(localStorage.getItem('storySettings')).wordsToLearn)
     const [forceUpdate, setForceUpdate] = useState(false)
+    const [inputError, setInputError] = useState('')
 
     const maxWords = 20
 
+    const japaneseRomanjiRegex = /[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF\u0041-\u005A\u0061-\u007A]/
+
     function addWord() {
+        if (!japaneseRomanjiRegex.test(wordInputed)) { // Check if ANY non-Japanese char exists
+            setInputError("Please enter only Japanese words.")
+            return
+        }
+        else {
+            setInputError('')
+        }
         if (wordInputed && wordsList.length < maxWords) {
             let tempList = wordsList
             tempList.unshift(wordInputed)
@@ -38,7 +48,7 @@ function WordsListModal(props) {
                 <IoIosClose />
             </div>
 
-            <div className="flex-grow flex flex-col items-center gap-5 mx-1 max-h-full">
+            <div className="flex-grow flex flex-col items-center gap-4 mx-1 max-h-full">
 
                 <h1 className="font-medium text-lg">Words to Learn List</h1>
                 <p className="text-center text-sm">Personalize your learning! Enter Japanese words you're studying. Stories will feature these words more often to help you practice</p>
@@ -46,6 +56,9 @@ function WordsListModal(props) {
                 <div className="w-full">
                     {wordsList.length >= maxWords &&
                         <p className="text-red-400 text-sm">max number of words reached</p>
+                    }
+                    {inputError &&
+                        <p className="text-red-400 text-sm">{inputError}</p>
                     }
                     <input type="text" value={wordInputed} 
                         onChange={(e) => setWordInputed(e.target.value)}
