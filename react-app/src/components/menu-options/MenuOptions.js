@@ -32,7 +32,7 @@ function MenuOptions() {
                     <CiMenuBurger />
                 </div>
                 {showMenuOptions &&
-                    <div className="absolute shadow-lg bg-stone-50 h-40 w-60 right-0 top-10 rounded-md border border-slate-300">
+                    <div className="absolute shadow-lg bg-stone-50 h-fit w-60 right-0 top-10 rounded-md border border-slate-300">
                         <p onClick={() => {
                             setShowWordsListModal(true)
                             setShowMenuOptions(false)
