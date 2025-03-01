@@ -43,11 +43,11 @@ function MenuOptions() {
             </div>
             
             {showWordsListModal && 
-            <>
+            <> 
                 <div onClick={() => setShowWordsListModal(false)}>
                     <BlackBackground/>
                 </div>
-                <WordsListModal/>
+                <WordsListModal setShowWordsListModal={setShowWordsListModal}/>
             </>
             }
         </>
