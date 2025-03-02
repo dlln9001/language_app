@@ -20,14 +20,26 @@ load_dotenv()
 def generate_story(request):
     # generate story based on user input
     story_settings = request.data['story_settings']
+    print(story_settings)
 
     random_names = random.sample(all_japanese_names, 4)
 
-    if story_settings['kana']:
-        kana_or_kanji = 'use only kana (hiragana or katakana) for all words, do not use any kanji at all. Even for names'
+    if story_settings['wordsToLearn']:
+        words_to_learn = story_settings['wordsToLearn']
+        words_to_learn_prompt = f"""Please try your best to include the following japanese words in the story: {words_to_learn} 
+                                (even if they may be harder than the indicated difficulty). If a word is not japanese, do not use it."""
     else:
-        kana_or_kanji = """use kanji, don't provide furigana. 
-                            And don't provide the hiragana in parenthesis after the kanji. The text you produce goes through a tts, and it will repeat the words."""
+        words_to_learn_prompt = ''
+
+    if story_settings['kana']:
+        kana_or_kanji = 'use only kana (hiragana or katakana) for all words, do NOT ever use any kanji at all. Even for names'
+    else:
+        kana_or_kanji = """use kanji, do NOT provide furigana. 
+                            And DO NOT EVER provide the hiragana in parenthesis after the kanji. The text you produce goes through a tts, and it will repeat the words.
+                            Example of Desired Output (Correct - NO Furigana):
+                            広い台所で、青いリボンがついた鍵を見つけました。それはとてもきれいでした。
+                            Example of Incorrect Output (AVOID this - Furigana is NOT wanted):
+                            広（ひろ）い台所（だいどころ）で、青（あお）いリボンがついた鍵（かぎ）を見（み）つけました。 <-- DO NOT DO THIS!"""
 
     # if story_settings['charactersName'].lower() in blacklist:
     #     character_name = 'John Doe'
@@ -90,6 +102,7 @@ def generate_story(request):
                 When referring to characters, please use appropriate Japanese honorific suffixes after their names, but don't use kanji for these suffixes.
                 Strive for natural and contextually reasonable honorific usage.
                 Make names bolded everytime a name shows up. Please write the character's name in hiragana, do not use kanji for names.
+                {words_to_learn_prompt}
                 """
     print(prompt)
 
