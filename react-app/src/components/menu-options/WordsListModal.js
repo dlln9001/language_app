@@ -48,7 +48,7 @@ function WordsListModal(props) {
                 <IoIosClose />
             </div>
 
-            <div className="flex-grow flex flex-col items-center gap-4 mx-1 max-h-full">
+            <div className="flex-grow flex flex-col items-center gap-4 mx-1 md:mx-20 max-h-full">
 
                 <h1 className="font-medium text-lg">Words to Learn List</h1>
                 <p className="text-center text-sm">Personalize your learning! Enter Japanese words you're studying. Stories will feature these words more often to help you practice</p>
