@@ -8,14 +8,36 @@ import { IoIosArrowUp } from "react-icons/io";
 function CharacterCreationModal(props) {
     const [nameInputed, setNameInputed] = useState('')
     const [showTraits, setShowTraits] = useState(false)
+    const [selectedTraits, setSelectedTraits] = useState({})
+    const [displayedTraits, setDisplayedTraits] = useState('')
+    const [forceUpdate, setForceUpdate] = useState(false)
 
     const pairTraits = [['Nice', 'Mean'], ['Brave', 'Cowardly'], ['Talkative', 'Shy'], ['Calm', 'Angry'], ['Smart', 'Airhead'], ['Cautious', 'Reckless']]
     const singleTraits = ['Energetic', 'Adventurous', 'Funny']
 
+    function selectTrait(index, trait) {
+        let tempTraits = selectedTraits
+        if (tempTraits[index] === trait) {
+            delete tempTraits[index]
+        }
+        else {
+            tempTraits[index] = trait
+        }
+        
+        setSelectedTraits(tempTraits)
+        
+        let array = Object.values(tempTraits)
+        let displayed = array.join(', ')
+        setDisplayedTraits(displayed)
+        
+        setForceUpdate(!forceUpdate)
+    }
+
     return (
-        <div className="fixed bg-stone-50 z-50 w-[85%] h-[75%] md:h-[60%] md:w-[40%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-md flex flex-col p-4 overflow-hidden">
+        <div className="fixed bg-stone-50 z-50 w-[85%] h-[75%] md:h-[60%] md:w-[40%] 
+                        top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-md flex flex-col p-4 overflow-auto custom-scrollbar">
             
-            <div className="ml-auto text-4xl cursor-pointer" onClick={() => props.setShowModal(0)}>
+            <div className="ml-auto text-4xl cursor-pointer md:sticky md:top-0" onClick={() => props.setShowModal(0)}>
                 <IoIosClose />
             </div>
 
@@ -32,8 +54,9 @@ function CharacterCreationModal(props) {
                         className="border border-stone-300 bg-stone-50 rounded-md px-3 py-1 w-full outline-none focus:border-stone-400"/>
 
 
-                <div className="self-start">
-                    <div className="flex items-center gap-3 mt-4 mb-3 w-fit" onClick={() => setShowTraits(!showTraits)}>
+                <div className="self-start w-full">
+
+                    <div className="flex items-center gap-3 mt-4 mb-1 w-fit" onClick={() => setShowTraits(!showTraits)}>
                         <p>Show traits:</p>
                         {showTraits ? 
                             <div>
@@ -45,19 +68,34 @@ function CharacterCreationModal(props) {
                             </div>
                         }
                     </div>
+
+                    <p className=" text-wrap w-full mb-3 text-sm text-stone-400">selected traits: {displayedTraits}</p>
+
                     {showTraits &&
                         <div className="flex flex-wrap gap-3 text-teal-700">
                             {pairTraits.map((pair, index) => {
                                 return (
-                                    <div key={index} className="rounded-full border border-teal-700 flex gap-2 px-2 w-9/12">
-                                        <p className="w-1/2 text-center border border-transparent border-r-teal-700 py-1">{pair[0]}</p>
-                                        <p className="w-1/2 text-center py-1">{pair[1]}</p>
+                                    <div key={index} className="rounded-full border border-teal-700 flex w-9/12">
+                                        <p className={`w-1/2 text-center border rounded-l-full border-l-0 border-y-0 border-r-teal-700 py-1 px-2
+                                                    ${selectedTraits[index] === pair[0] ? 'bg-teal-700 text-stone-50' : ''}`}
+                                            onClick={() => selectTrait(index, pair[0])}>
+                                                {pair[0]}
+                                        </p>
+                                        
+                                        <p className={`w-1/2 text-center py-1 rounded-r-full ${selectedTraits[index] === pair[1] ? 'bg-teal-700 text-stone-50' : ''}`}
+                                            onClick={() => selectTrait(index, pair[1])}>
+                                                {pair[1]}
+                                        </p>
                                     </div>
                                 )
                             })}
                             {singleTraits.map((trait, index) => {
+                                index += 1
                                 return (
-                                    <div key={index} className="rounded-full border border-teal-700 flex gap-2 px-2 w-5/12">
+                                    <div key={index} 
+                                        className={`rounded-full border border-teal-700 flex gap-2 px-2 w-5/12 
+                                        ${selectedTraits[-index] === trait ? 'bg-teal-700 text-stone-50' : ''}`}
+                                        onClick={() => selectTrait(-index, trait)}>
                                         <p className="w-full text-center py-1">{trait}</p>
                                     </div>
                                 )
@@ -65,6 +103,10 @@ function CharacterCreationModal(props) {
                         </div>
                     }
                 </div>
+
+                <button className="bg-teal-700 text-stone-50 w-full mt-5 rounded-md mb-2">Randomize</button>
+
+                <button className="bg-teal-700 text-stone-50 w-full mt-3 rounded-md py-1 mb-3">Add Character</button>
 
             </div>
 
