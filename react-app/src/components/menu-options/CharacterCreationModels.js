@@ -14,6 +14,10 @@ function CharacterCreationModal(props) {
 
     const pairTraits = [['Nice', 'Mean'], ['Brave', 'Cowardly'], ['Talkative', 'Shy'], ['Calm', 'Angry'], ['Smart', 'Airhead'], ['Cautious', 'Reckless']]
     const singleTraits = ['Energetic', 'Adventurous', 'Funny']
+    const randChars = ['もちこ', 'はるき', 'あおい', 'けんた', 'ゆい', 'そうた', 'みさき', 'りょう', 'ひなた', 'ゆうと', 'さくら', 'かいと', 'つむぎ', 'だいき', 'こはる', 'ゆうき', 
+                        'あかり', 'しょうた', 'りん', 'けいすけ', 'ななみ', 'こうた', 'あやね', 'りく', 'めい', 'あきら', 'あすか', 'あやの', 'えりか', 'えみ', 'いくみ', 'ひろき', 
+                        'いずみ', 'えいか', 'まゆ', 'なおみ', 'ゆたか', 'ゆか', 'まどか', 'まなみ', 'さやか', 'りょうた', 'りょうこ', 'さおり', 'ともこ', 'ともあき', 'あかね', 'あゆみ', 
+                        'あやこ', 'ひろこ']
 
     function selectTrait(index, trait) {
         let tempTraits = selectedTraits
@@ -31,6 +35,39 @@ function CharacterCreationModal(props) {
         setDisplayedTraits(displayed)
         
         setForceUpdate(!forceUpdate)
+    }
+
+    function randomizeCharacter() {
+        // randomize name
+        let name = randChars[Math.floor(Math.random() * randChars.length)]
+        let tempTraits = {}
+        
+        // randomize traits
+        for (let i = 0; i < pairTraits.length; i++) { 
+            if (Math.random() < 0.6) {
+                if (Math.random() < 0.5) {
+                    tempTraits[i] = pairTraits[i][0]
+                } 
+                else {
+                    tempTraits[i] = pairTraits[i][1]
+                }
+            }
+        }
+
+        for (let i = 0; i < singleTraits.length; i++) {
+            let index = i+1
+            if (Math.random() < 0.15) {
+                console.log(singleTraits[i])
+                tempTraits[-index] = singleTraits[i]
+            }
+         }
+         setSelectedTraits(tempTraits)
+        
+         let array = Object.values(tempTraits)
+         let displayed = array.join(', ')
+         setDisplayedTraits(displayed)
+
+        setNameInputed(name)
     }
 
     return (
@@ -104,7 +141,7 @@ function CharacterCreationModal(props) {
                     }
                 </div>
 
-                <button className="bg-teal-700 text-stone-50 w-full mt-5 rounded-md mb-2">Randomize</button>
+                <button className="bg-teal-700 text-stone-50 w-full mt-5 rounded-md mb-2" onClick={randomizeCharacter}>Randomize</button>
 
                 <button className="bg-teal-700 text-stone-50 w-full mt-3 rounded-md py-1 mb-3">Add Character</button>
 
