@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react"
 
 import WordsListModal from "./WordsListModal";
 import BlackBackground from "./BlackBackground";
+import CharacterCreationModal from "./CharacterCreationModels";
 
 import { CiMenuBurger } from "react-icons/ci";
 
@@ -9,7 +10,8 @@ import { CiMenuBurger } from "react-icons/ci";
 function MenuOptions() {
     const menuRef = useRef(null)
     const [showMenuOptions, setShowMenuOptions] = useState(false)
-    const [showWordsListModal, setShowWordsListModal] = useState(false)
+
+    const [showModal, setShowModal] = useState(0)
 
     useEffect(() => {
         document.addEventListener('click', handleDocumentClick)
@@ -34,20 +36,32 @@ function MenuOptions() {
                 {showMenuOptions &&
                     <div className="absolute shadow-lg bg-stone-50 h-fit w-60 right-0 top-10 rounded-md border border-slate-300">
                         <p onClick={() => {
-                            setShowWordsListModal(true)
+                            setShowModal(1)
                             setShowMenuOptions(false)
                         }} 
                         className="px-10 py-2 cursor-pointer hover:bg-stone-100 rounded-md">Words to Learn List</p>
+                        <p onClick={() => {
+                            setShowMenuOptions(false)
+                            setShowModal(2)
+                            }} 
+                            className="px-10 py-2 cursor-pointer hover:bg-stone-100 rounded-md">
+                                Character Creation
+                        </p>
                     </div>
                 }
             </div>
             
-            {showWordsListModal && 
+            {showModal && 
             <> 
-                <div onClick={() => setShowWordsListModal(false)}>
+                <div onClick={() => setShowModal(0)}>
                     <BlackBackground/>
                 </div>
-                <WordsListModal setShowWordsListModal={setShowWordsListModal}/>
+                {showModal === 1 &&
+                    <WordsListModal setShowModal={setShowModal}/>
+                }
+                {showModal === 2 &&
+                    <CharacterCreationModal setShowModal={setShowModal}/>
+                }
             </>
             }
         </>

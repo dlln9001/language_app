@@ -44,7 +44,7 @@ function WordsListModal(props) {
     return (
         <div className="fixed bg-stone-50 z-50 w-[85%] h-[75%] md:h-[60%] md:w-[40%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-md flex flex-col p-4 overflow-hidden">
 
-            <div className="ml-auto text-4xl cursor-pointer" onClick={() => props.setShowWordsListModal(false)}>
+            <div className="ml-auto text-4xl cursor-pointer" onClick={() => props.setShowModal(0)}>
                 <IoIosClose />
             </div>
 
