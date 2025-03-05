@@ -165,7 +165,58 @@ function CharacterCreationModal(props) {
 
                 <button className="bg-teal-700 text-stone-50 w-full mt-3 rounded-md py-1 mb-6" onClick={addCharacter}>Add Character</button>
                 
-  
+                <div className="self-start w-full">
+                    <p>Your Characters:</p>
+                    <div>
+                        {characters.map((character, index) => {
+
+                            let displayed_traits = character.traits.join(', ')
+                            return (
+                                <div key={index}>
+                                    <div className="flex items-center gap-3 mt-5 w-full cursor-pointer" 
+                                        onClick={() => {
+                                            if (showCharDetails[1] != index) {
+                                                setShowCharDetails([true, index])
+                                            }
+                                            else {
+                                                setShowCharDetails([!showCharDetails[0], index])
+                                            }
+                                        }}>
+                                        <p className=" font-medium text-nowrap">{character.name}</p>
+                                        <p className=" text-ellipsis text-nowrap overflow-hidden text-sm text-stone-400">{displayed_traits}</p>
+                                        <div className="ml-auto">
+                                            {showCharDetails[0] && showCharDetails[1] === index ? 
+                                                <div>
+                                                    <IoIosArrowUp />
+                                                </div>
+                                            :
+                                                <div>
+                                                    <IoIosArrowDown />
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+
+                                    {showCharDetails[0] && showCharDetails[1] === index &&
+                                        <div className="mt-2">
+                                            {displayed_traits 
+                                            ?
+                                                <p className=" text-stone-600">traits: {displayed_traits}</p>
+                                            : 
+                                                <p className=" text-stone-600">traits: no traits</p>
+                                            }
+                                            
+                                        </div>
+                                    }
+
+                                </div>
+                            )
+                        })
+
+                        }
+                    </div>
+                    <br />
+                </div>
 
             </div>
 
