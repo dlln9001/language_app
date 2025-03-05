@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react"
 
 import WordsListModal from "./WordsListModal";
 import BlackBackground from "./BlackBackground";
-import CharacterCreationModal from "./CharacterCreationModels";
+import CharacterCreationModal from "./character-creation/CharacterCreationModels";
 
 import { CiMenuBurger } from "react-icons/ci";
 
