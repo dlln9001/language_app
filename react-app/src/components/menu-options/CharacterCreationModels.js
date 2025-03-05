@@ -6,14 +6,18 @@ import { IoIosArrowUp } from "react-icons/io";
 
 
 function CharacterCreationModal(props) {
+    const [forceUpdate, setForceUpdate] = useState(false)
+
     const [nameInputed, setNameInputed] = useState('')
+    
     const [showTraits, setShowTraits] = useState(false)
     const [selectedTraits, setSelectedTraits] = useState({})
     const [displayedTraits, setDisplayedTraits] = useState('')
-    const [forceUpdate, setForceUpdate] = useState(false)
-
     const pairTraits = [['Nice', 'Mean'], ['Brave', 'Cowardly'], ['Talkative', 'Shy'], ['Calm', 'Angry'], ['Smart', 'Airhead'], ['Cautious', 'Reckless']]
     const singleTraits = ['Energetic', 'Adventurous', 'Funny']
+
+    const [characters, setCharacters] = useState(JSON.parse(localStorage.getItem('storySettings')).characters)
+    const [showCharDetails, setShowCharDetails] = useState([false, -1])
     const randChars = ['もちこ', 'はるき', 'あおい', 'けんた', 'ゆい', 'そうた', 'みさき', 'りょう', 'ひなた', 'ゆうと', 'さくら', 'かいと', 'つむぎ', 'だいき', 'こはる', 'ゆうき', 
                         'あかり', 'しょうた', 'りん', 'けいすけ', 'ななみ', 'こうた', 'あやね', 'りく', 'めい', 'あきら', 'あすか', 'あやの', 'えりか', 'えみ', 'いくみ', 'ひろき', 
                         'いずみ', 'えいか', 'まゆ', 'なおみ', 'ゆたか', 'ゆか', 'まどか', 'まなみ', 'さやか', 'りょうた', 'りょうこ', 'さおり', 'ともこ', 'ともあき', 'あかね', 'あゆみ', 
@@ -68,6 +72,22 @@ function CharacterCreationModal(props) {
          setDisplayedTraits(displayed)
 
         setNameInputed(name)
+    }
+
+    function addCharacter() {
+        let characters = JSON.parse(localStorage.getItem('storySettings')).characters
+        let newCharacter = {name: nameInputed, traits: Object.values(selectedTraits)}
+        characters.push(newCharacter)
+        
+        let storySettings = JSON.parse(localStorage.getItem('storySettings'))
+        storySettings.characters = characters
+
+        setCharacters(characters)
+        setNameInputed('')
+        setSelectedTraits({})
+        setDisplayedTraits('')
+        
+        localStorage.setItem('storySettings', JSON.stringify(storySettings))
     }
 
     return (
@@ -143,7 +163,9 @@ function CharacterCreationModal(props) {
 
                 <button className="bg-teal-700 text-stone-50 w-full mt-5 rounded-md mb-2" onClick={randomizeCharacter}>Randomize</button>
 
-                <button className="bg-teal-700 text-stone-50 w-full mt-3 rounded-md py-1 mb-3">Add Character</button>
+                <button className="bg-teal-700 text-stone-50 w-full mt-3 rounded-md py-1 mb-6" onClick={addCharacter}>Add Character</button>
+                
+  
 
             </div>
 
