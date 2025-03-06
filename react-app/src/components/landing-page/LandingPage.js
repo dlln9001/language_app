@@ -33,7 +33,7 @@ function LandingPage() {
         if (!localStorage.getItem('storySettings')) {
             // all default settings
             localStorage.setItem('storySettings', JSON.stringify({difficulty: levels[0], length: "Short", genre: "Random", 
-                                charactersName: "", kana: false, wordsToLearn: [], characters: []}))
+                                 kana: false, wordsToLearn: [], characters: []}))
             
             setDifficulty(levels[0])
             setLength("Short")

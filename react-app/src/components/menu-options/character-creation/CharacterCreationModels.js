@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import DeleteCharacter from "./DeleteCharacter";
+import Traits from "./Traits";
 
 import { IoIosClose } from "react-icons/io";
 import { IoIosArrowDown } from "react-icons/io";
@@ -8,11 +9,9 @@ import { IoIosArrowUp } from "react-icons/io";
 
 
 function CharacterCreationModal(props) {
-    const [forceUpdate, setForceUpdate] = useState(false)
 
     const [nameInputed, setNameInputed] = useState('')
     
-    const [showTraits, setShowTraits] = useState(false)
     const [selectedTraits, setSelectedTraits] = useState({})
     const [displayedTraits, setDisplayedTraits] = useState('')
     const pairTraits = [['Nice', 'Mean'], ['Brave', 'Cowardly'], ['Talkative', 'Shy'], ['Calm', 'Angry'], ['Smart', 'Airhead'], ['Cautious', 'Reckless']]
@@ -24,24 +23,6 @@ function CharacterCreationModal(props) {
                         'あかり', 'しょうた', 'りん', 'けいすけ', 'ななみ', 'こうた', 'あやね', 'りく', 'めい', 'あきら', 'あすか', 'あやの', 'えりか', 'えみ', 'いくみ', 'ひろき', 
                         'いずみ', 'えいか', 'まゆ', 'なおみ', 'ゆたか', 'ゆか', 'まどか', 'まなみ', 'さやか', 'りょうた', 'りょうこ', 'さおり', 'ともこ', 'ともあき', 'あかね', 'あゆみ', 
                         'あやこ', 'ひろこ']
-
-    function selectTrait(index, trait) {
-        let tempTraits = selectedTraits
-        if (tempTraits[index] === trait) {
-            delete tempTraits[index]
-        }
-        else {
-            tempTraits[index] = trait
-        }
-        
-        setSelectedTraits(tempTraits)
-        
-        let array = Object.values(tempTraits)
-        let displayed = array.join(', ')
-        setDisplayedTraits(displayed)
-        
-        setForceUpdate(!forceUpdate)
-    }
 
     function randomizeCharacter() {
         // randomize name
@@ -122,55 +103,14 @@ function CharacterCreationModal(props) {
                     <p className="self-start text-xs text-red-500">Name too long</p>
                 }
 
-                <div className="self-start w-full">
 
-                    <div className="flex items-center gap-3 mt-4 mb-1 w-fit cursor-pointer" onClick={() => setShowTraits(!showTraits)}>
-                        <p>Show traits:</p>
-                        {showTraits ? 
-                            <div>
-                                <IoIosArrowUp />
-                            </div>
-                        :
-                            <div>
-                                <IoIosArrowDown />
-                            </div>
-                        }
-                    </div>
-
-                    <p className=" text-wrap w-full mb-3 text-sm text-stone-400">selected traits: {displayedTraits}</p>
-
-                    {showTraits &&
-                        <div className="flex flex-wrap gap-3 text-teal-700">
-                            {pairTraits.map((pair, index) => {
-                                return (
-                                    <div key={index} className="rounded-full border border-teal-700 flex w-9/12 cursor-pointer">
-                                        <p className={`w-1/2 text-center border rounded-l-full border-l-0 border-y-0 border-r-teal-700 py-1 px-2
-                                                    ${selectedTraits[index] === pair[0] ? 'bg-teal-700 text-stone-50' : ''}`}
-                                            onClick={() => selectTrait(index, pair[0])}>
-                                                {pair[0]}
-                                        </p>
-                                        
-                                        <p className={`w-1/2 text-center py-1 rounded-r-full ${selectedTraits[index] === pair[1] ? 'bg-teal-700 text-stone-50' : ''}`}
-                                            onClick={() => selectTrait(index, pair[1])}>
-                                                {pair[1]}
-                                        </p>
-                                    </div>
-                                )
-                            })}
-                            {singleTraits.map((trait, index) => {
-                                index += 1
-                                return (
-                                    <div key={index} 
-                                        className={`rounded-full border border-teal-700 flex gap-2 px-2 w-5/12 cursor-pointer
-                                        ${selectedTraits[-index] === trait ? 'bg-teal-700 text-stone-50' : ''}`}
-                                        onClick={() => selectTrait(-index, trait)}>
-                                        <p className="w-full text-center py-1">{trait}</p>
-                                    </div>
-                                )
-                            })}
-                        </div>
-                    }
-                </div>
+                <Traits
+                    selectedTraits={selectedTraits}
+                    setSelectedTraits={setSelectedTraits}
+                    displayedTraits={displayedTraits}
+                    setDisplayedTraits={setDisplayedTraits}
+                    pairTraits={pairTraits}
+                    singleTraits={singleTraits}/>
 
                 <button className="bg-teal-700 text-stone-50 w-full mt-5 rounded-md mb-2" onClick={randomizeCharacter}>Randomize</button>
 

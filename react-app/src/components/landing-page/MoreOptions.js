@@ -9,32 +9,15 @@ import { CiCircleInfo } from "react-icons/ci";
 
 function MoreOptions() {
     const [kana, setKana] = useState('loading')
-    const [showNameInfo, setShowNameInfo] = useState(false)
-    const nameInfoRef = useRef(null)
-    const [name, setName] = useState("")
-
-    // Allows letters, numbers, spaces, hyphens, and apostrophes
-    const NameWhitelist = /^[a-zA-Z0-9\s'-]+$/;
 
     useEffect(() => {
-        document.addEventListener('click', handleDocumentClick)
 
         if (localStorage.getItem('storySettings')) {
             const settings = JSON.parse(localStorage.getItem('storySettings'))
-            setName(settings.charactersName)
             setKana(settings.kana)
         }
 
-        return () => {
-            document.removeEventListener('click', handleDocumentClick)
-        }
     }, [])
-
-    function handleDocumentClick(e) {
-        if (nameInfoRef.current && !nameInfoRef.current.contains(e.target)) {
-            setShowNameInfo(false)
-        }
-    }
 
     return (
         <div className="w-full">

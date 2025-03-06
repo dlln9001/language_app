@@ -56,11 +56,6 @@ def generate_story(request):
 
     # if story_settings['charactersName'].lower() in blacklist:
     #     character_name = 'John Doe'
-    
-    # if story_settings['charactersName'] == '':
-    #     character_name = random.choice(all_japanese_names)
-    # else:
-    #     character_name = story_settings['charactersName']
 
     if story_settings['genre'] == 'Random':
         genre = random.sample(all_genres, 3)
