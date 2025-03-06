@@ -77,19 +77,21 @@ function CharacterCreationModal(props) {
     }
 
     function addCharacter() {
-        let characters = JSON.parse(localStorage.getItem('storySettings')).characters
-        let newCharacter = {name: nameInputed, traits: Object.values(selectedTraits)}
-        characters.unshift(newCharacter)
-        
-        let storySettings = JSON.parse(localStorage.getItem('storySettings'))
-        storySettings.characters = characters
-
-        setCharacters(characters)
-        setNameInputed('')
-        setSelectedTraits({})
-        setDisplayedTraits('')
-        
-        localStorage.setItem('storySettings', JSON.stringify(storySettings))
+        if (nameInputed) {
+            let characters = JSON.parse(localStorage.getItem('storySettings')).characters
+            let newCharacter = {name: nameInputed, traits: Object.values(selectedTraits)}
+            characters.unshift(newCharacter)
+            
+            let storySettings = JSON.parse(localStorage.getItem('storySettings'))
+            storySettings.characters = characters
+    
+            setCharacters(characters)
+            setNameInputed('')
+            setSelectedTraits({})
+            setDisplayedTraits('')
+            
+            localStorage.setItem('storySettings', JSON.stringify(storySettings))
+        }
     }
 
     return (
@@ -108,10 +110,17 @@ function CharacterCreationModal(props) {
                 </div>
 
                 <input type="text" value={nameInputed} 
-                        onChange={(e) => setNameInputed(e.target.value)}
+                        onChange={(e) => {
+                            if ((e.target.value.length <= 25) || e.target.value === "") {
+                                setNameInputed(e.target.value)
+                            }
+                        }}
                         placeholder="Enter character name..."
                         className="border border-stone-300 bg-stone-50 rounded-md px-3 py-1 w-full outline-none focus:border-stone-400"/>
-
+                
+                {nameInputed.length === 25 &&
+                    <p className="self-start text-xs text-red-500">Name too long</p>
+                }
 
                 <div className="self-start w-full">
 

@@ -45,40 +45,6 @@ function MoreOptions() {
                 </div>
 
                 <div className=" mt-3 w-full">
-                    <p className=" text-sm mb-1 md:text-base">Main Characters Name</p>
-                    <div className="flex items-center gap-2 relative">
-                        <div className="relative w-2/3">
-                            <input type="text" placeholder="Enter name..." className="border border-slate-300 rounded-md text-sm px-2 py-1 w-full outline-none bg-stone-50 md:text-base"
-                                    value={name}
-                                    onChange={(e) => {
-                                        if ((e.target.value.length <= 25 && NameWhitelist.test(e.target.value)) || e.target.value === "") {
-                                            let storySettings = JSON.parse(localStorage.getItem('storySettings'))
-                                            storySettings['charactersName'] = e.target.value
-                                            localStorage.setItem('storySettings', JSON.stringify(storySettings))
-                                            setName(e.target.value)
-                                        }
-                                    }}/>
-                            {name.length === 25 &&
-                                <p className="absolute text-xs right-0 text-red-500">Name too long</p>
-                            }
-                        </div>
-
-                        <div className=" text-lg cursor-pointer" 
-                            onClick={() => setShowNameInfo(!showNameInfo)} 
-                            ref={nameInfoRef}
-                            >
-                            <CiCircleInfo />
-                        </div>
-
-                        {showNameInfo &&
-                            <div className=" bg-slate-800 text-stone-50 rounded-md p-2 absolute top-8 right-0 z-10">
-                                <p className=" text-xs">The main character's name will be used in the story</p>
-                            </div>
-                        }
-                    </div>
-                </div>
-
-                <div className=" mt-3 w-full">
                     <p className=" text-sm mb-1 md:text-base">Read in Kana (no kanji)</p>
 
                     <div className={`transition ${kana ? `bg-teal-700` : `bg-stone-400`} duration-500 rounded-full p-1 w-12 flex cursor-pointer`} 
