@@ -24,6 +24,19 @@ def generate_story(request):
 
     random_names = random.sample(all_japanese_names, 4)
 
+    created_characters = story_settings['characters']
+
+    if created_characters:
+        characters_prompt = f"""Use these characters in the story, each character has a name, along with some traits: {created_characters}. 
+                                Use name exactly, if it's in romaji, use romaji, if it's katakana use katakana, etc. 
+                                If you want to include additional characters beyond {created_characters} (like if there's not enough characters), 
+                                You can optionally use names from this list: {random_names}. Only add extra characters if it naturally fits the story and enhances engagement.  
+                                For very short stories, it's often best to keep the number of characters limited to maintain focus."""
+    else:
+        characters_prompt = f"""For characters, you can use names from this list if you need ideas: {random_names}. 
+                                Only add extra characters if it naturally fits the story and enhances engagement.  
+                                For very short stories, it's often best to keep the number of characters limited to maintain focus"""
+
     if story_settings['wordsToLearn']:
         words_to_learn = story_settings['wordsToLearn']
         words_to_learn_prompt = f"""Please try your best to include the following japanese words in the story: {words_to_learn} 
@@ -32,7 +45,7 @@ def generate_story(request):
         words_to_learn_prompt = ''
 
     if story_settings['kana']:
-        kana_or_kanji = 'use only kana (hiragana or katakana) for all words, do NOT ever use any kanji at all. Even for names'
+        kana_or_kanji = 'use only kana (hiragana or katakana) for all words, do NOT ever use any kanji at all.'
     else:
         kana_or_kanji = """use kanji, do NOT provide furigana. 
                             And DO NOT EVER provide the hiragana in parenthesis after the kanji. The text you produce goes through a tts, and it will repeat the words.
@@ -44,10 +57,10 @@ def generate_story(request):
     # if story_settings['charactersName'].lower() in blacklist:
     #     character_name = 'John Doe'
     
-    if story_settings['charactersName'] == '':
-        character_name = random.choice(all_japanese_names)
-    else:
-        character_name = story_settings['charactersName']
+    # if story_settings['charactersName'] == '':
+    #     character_name = random.choice(all_japanese_names)
+    # else:
+    #     character_name = story_settings['charactersName']
 
     if story_settings['genre'] == 'Random':
         genre = random.sample(all_genres, 3)
@@ -82,7 +95,7 @@ def generate_story(request):
                                 """)
         
         
-    print(genre, random_theme, random_names, random_starting_situation, random_locations)
+    # print(genre, random_theme, random_names, random_starting_situation, random_locations)
     prompt = f"""Generate a short story in Japanese for language learners at the JLPT {story_settings['difficulty']} level, 
                 never go higher in difficulty than {story_settings['difficulty']}, {kana_or_kanji}.
                 Please choose one genre from this list of genres: {genre}.
@@ -94,14 +107,11 @@ def generate_story(request):
                 but don't be afraid to choose potentially interesting or slightly unexpected combinations that could make the story more unique.
                 Aim for approximately {length} words in length. 
                 Please make the story engaging and interesting for a Japanese language learner, ensuring it's original and not repetitive.
-                You must include {character_name} as a character in the story. Use name exactly. 
-                If you want to include additional characters beyond {character_name}, 
-                You can optionally use names from this list: {random_names}. Only add extra characters if it naturally fits the story and enhances engagement.  
-                For very short stories, it's often best to keep the number of characters limited to maintain focus. If new characters are added to the story, 
+                {characters_prompt} If new characters are added to the story, 
                 please introduce them in a way that makes it clear who they are and how they relate to the main character.
                 When referring to characters, please use appropriate Japanese honorific suffixes after their names, but don't use kanji for these suffixes.
                 Strive for natural and contextually reasonable honorific usage.
-                Make names bolded everytime a name shows up. Please write the character's name in hiragana, do not use kanji for names.
+                Make names bolded everytime a name shows up. Do not use any kanji for character names.
                 {words_to_learn_prompt}
                 """
     print(prompt)

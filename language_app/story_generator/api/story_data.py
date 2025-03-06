@@ -1,6 +1,6 @@
 
 
-all_genres = ['Slice of Life', 'Adventure', 'Silly', 'Comedy', 'Mystery', 'Food', 'Travel', 'Animals']
+all_genres = ['Slice of Life', 'Adventure', 'Silly', 'Mystery', 'Food', 'Travel', 'Animals']
 
 general_themes = [
 'Friendship', 'Discovery', 'Challenge', 'Everyday life', 'Problem solving',
