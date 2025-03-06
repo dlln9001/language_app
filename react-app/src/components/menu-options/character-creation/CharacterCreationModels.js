@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import DeleteCharacter from "./DeleteCharacter";
+
 import { IoIosClose } from "react-icons/io";
 import { IoIosArrowDown } from "react-icons/io";
 import { IoIosArrowUp } from "react-icons/io";
@@ -77,7 +79,7 @@ function CharacterCreationModal(props) {
     function addCharacter() {
         let characters = JSON.parse(localStorage.getItem('storySettings')).characters
         let newCharacter = {name: nameInputed, traits: Object.values(selectedTraits)}
-        characters.push(newCharacter)
+        characters.unshift(newCharacter)
         
         let storySettings = JSON.parse(localStorage.getItem('storySettings'))
         storySettings.characters = characters
@@ -113,7 +115,7 @@ function CharacterCreationModal(props) {
 
                 <div className="self-start w-full">
 
-                    <div className="flex items-center gap-3 mt-4 mb-1 w-fit" onClick={() => setShowTraits(!showTraits)}>
+                    <div className="flex items-center gap-3 mt-4 mb-1 w-fit cursor-pointer" onClick={() => setShowTraits(!showTraits)}>
                         <p>Show traits:</p>
                         {showTraits ? 
                             <div>
@@ -132,7 +134,7 @@ function CharacterCreationModal(props) {
                         <div className="flex flex-wrap gap-3 text-teal-700">
                             {pairTraits.map((pair, index) => {
                                 return (
-                                    <div key={index} className="rounded-full border border-teal-700 flex w-9/12">
+                                    <div key={index} className="rounded-full border border-teal-700 flex w-9/12 cursor-pointer">
                                         <p className={`w-1/2 text-center border rounded-l-full border-l-0 border-y-0 border-r-teal-700 py-1 px-2
                                                     ${selectedTraits[index] === pair[0] ? 'bg-teal-700 text-stone-50' : ''}`}
                                             onClick={() => selectTrait(index, pair[0])}>
@@ -150,7 +152,7 @@ function CharacterCreationModal(props) {
                                 index += 1
                                 return (
                                     <div key={index} 
-                                        className={`rounded-full border border-teal-700 flex gap-2 px-2 w-5/12 
+                                        className={`rounded-full border border-teal-700 flex gap-2 px-2 w-5/12 cursor-pointer
                                         ${selectedTraits[-index] === trait ? 'bg-teal-700 text-stone-50' : ''}`}
                                         onClick={() => selectTrait(-index, trait)}>
                                         <p className="w-full text-center py-1">{trait}</p>
@@ -173,7 +175,7 @@ function CharacterCreationModal(props) {
                             let displayed_traits = character.traits.join(', ')
                             return (
                                 <div key={index}>
-                                    <div className="flex items-center gap-3 mt-5 w-full cursor-pointer" 
+                                    <div className="flex items-center gap-3 mt-6 w-full cursor-pointer" 
                                         onClick={() => {
                                             if (showCharDetails[1] != index) {
                                                 setShowCharDetails([true, index])
@@ -182,7 +184,7 @@ function CharacterCreationModal(props) {
                                                 setShowCharDetails([!showCharDetails[0], index])
                                             }
                                         }}>
-                                        <p className=" font-medium text-nowrap">{character.name}</p>
+                                        <p className=" text-nowrap text-lg">{character.name}</p>
                                         <p className=" text-ellipsis text-nowrap overflow-hidden text-sm text-stone-400">{displayed_traits}</p>
                                         <div className="ml-auto">
                                             {showCharDetails[0] && showCharDetails[1] === index ? 
@@ -198,13 +200,16 @@ function CharacterCreationModal(props) {
                                     </div>
 
                                     {showCharDetails[0] && showCharDetails[1] === index &&
-                                        <div className="mt-2">
+                                        <div className="mt-2 text-sm">
                                             {displayed_traits 
                                             ?
                                                 <p className=" text-stone-600">traits: {displayed_traits}</p>
                                             : 
                                                 <p className=" text-stone-600">traits: no traits</p>
                                             }
+                                            <div className="mt-2">
+                                                <DeleteCharacter charIndex={index} setCharacters={setCharacters} setShowCharDetails={setShowCharDetails}/>
+                                            </div>
                                             
                                         </div>
                                     }
