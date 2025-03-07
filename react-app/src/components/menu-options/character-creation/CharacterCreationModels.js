@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import DeleteCharacter from "./DeleteCharacter";
 import Traits from "./Traits";
+import RandomizeCharacter from "./RandomizeCharacter";
 
 import { IoIosClose } from "react-icons/io";
 import { IoIosArrowDown } from "react-icons/io";
@@ -19,43 +20,6 @@ function CharacterCreationModal(props) {
 
     const [characters, setCharacters] = useState(JSON.parse(localStorage.getItem('storySettings')).characters)
     const [showCharDetails, setShowCharDetails] = useState([false, -1])
-    const randChars = ['もちこ', 'はるき', 'あおい', 'けんた', 'ゆい', 'そうた', 'みさき', 'りょう', 'ひなた', 'ゆうと', 'さくら', 'かいと', 'つむぎ', 'だいき', 'こはる', 'ゆうき', 
-                        'あかり', 'しょうた', 'りん', 'けいすけ', 'ななみ', 'こうた', 'あやね', 'りく', 'めい', 'あきら', 'あすか', 'あやの', 'えりか', 'えみ', 'いくみ', 'ひろき', 
-                        'いずみ', 'えいか', 'まゆ', 'なおみ', 'ゆたか', 'ゆか', 'まどか', 'まなみ', 'さやか', 'りょうた', 'りょうこ', 'さおり', 'ともこ', 'ともあき', 'あかね', 'あゆみ', 
-                        'あやこ', 'ひろこ']
-
-    function randomizeCharacter() {
-        // randomize name
-        let name = randChars[Math.floor(Math.random() * randChars.length)]
-        let tempTraits = {}
-        
-        // randomize traits
-        for (let i = 0; i < pairTraits.length; i++) { 
-            if (Math.random() < 0.6) {
-                if (Math.random() < 0.5) {
-                    tempTraits[i] = pairTraits[i][0]
-                } 
-                else {
-                    tempTraits[i] = pairTraits[i][1]
-                }
-            }
-        }
-
-        for (let i = 0; i < singleTraits.length; i++) {
-            let index = i+1
-            if (Math.random() < 0.15) {
-                console.log(singleTraits[i])
-                tempTraits[-index] = singleTraits[i]
-            }
-         }
-         setSelectedTraits(tempTraits)
-        
-         let array = Object.values(tempTraits)
-         let displayed = array.join(', ')
-         setDisplayedTraits(displayed)
-
-        setNameInputed(name)
-    }
 
     function addCharacter() {
         if (nameInputed) {
@@ -112,7 +76,12 @@ function CharacterCreationModal(props) {
                     pairTraits={pairTraits}
                     singleTraits={singleTraits}/>
 
-                <button className="bg-teal-700 text-stone-50 w-full mt-5 rounded-md mb-2" onClick={randomizeCharacter}>Randomize</button>
+                <RandomizeCharacter
+                    pairTraits={pairTraits}
+                    singleTraits={singleTraits}
+                    setSelectedTraits={setSelectedTraits}
+                    setDisplayedTraits={setDisplayedTraits}
+                    setNameInputed={setNameInputed}/>
 
                 <button className="bg-teal-700 text-stone-50 w-full mt-3 rounded-md py-1 mb-6" onClick={addCharacter}>Add Character</button>
                 
