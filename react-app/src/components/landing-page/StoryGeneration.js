@@ -52,7 +52,7 @@ function StoryGeneration() {
             
             setStoryResponse(clean_story_response)
             setResponse('<div class=text-base>' + clean_context_response + '</div>' +
-                '<hr class="my-5">' + 
+                '<hr class="my-1">' + 
                 clean_story_response)
 
             generateAudio(clean_story_response, audioValues.setController, audioValues.controller, 
@@ -82,7 +82,7 @@ function StoryGeneration() {
             </button>
             
             <p  id='story-text-area'
-                className=" bg-stone-50 mt-4 text-lg md:text-2xl w-full h-full mb-40"
+                className=" bg-stone-50 mt-4 text-lg md:text-2xl w-full h-full mb-40 flex flex-col gap-5 md:gap-9"
                 dangerouslySetInnerHTML={{__html: response}}>
             </p>
         

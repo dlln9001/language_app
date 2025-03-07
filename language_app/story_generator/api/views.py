@@ -107,7 +107,7 @@ def generate_story(request):
                 When referring to characters, please use appropriate Japanese honorific suffixes after their names, but don't use kanji for these suffixes.
                 Strive for natural and contextually reasonable honorific usage.
                 Make names bolded everytime a name shows up. Do not use any kanji for character names.
-                {words_to_learn_prompt}
+                {words_to_learn_prompt} Make sure to break up the story into small paragraphs to make it easier to read.
                 """
     print(prompt)
 

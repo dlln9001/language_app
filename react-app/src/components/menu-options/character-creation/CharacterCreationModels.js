@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import AddCharacter from "./AddCharacter";
 import DeleteCharacter from "./DeleteCharacter";
 import Traits from "./Traits";
 import RandomizeCharacter from "./RandomizeCharacter";
@@ -20,24 +21,6 @@ function CharacterCreationModal(props) {
 
     const [characters, setCharacters] = useState(JSON.parse(localStorage.getItem('storySettings')).characters)
     const [showCharDetails, setShowCharDetails] = useState([false, -1])
-
-    function addCharacter() {
-        if (nameInputed) {
-            let characters = JSON.parse(localStorage.getItem('storySettings')).characters
-            let newCharacter = {name: nameInputed, traits: Object.values(selectedTraits)}
-            characters.unshift(newCharacter)
-            
-            let storySettings = JSON.parse(localStorage.getItem('storySettings'))
-            storySettings.characters = characters
-    
-            setCharacters(characters)
-            setNameInputed('')
-            setSelectedTraits({})
-            setDisplayedTraits('')
-            
-            localStorage.setItem('storySettings', JSON.stringify(storySettings))
-        }
-    }
 
     return (
         <div className="fixed bg-stone-50 z-50 w-[85%] h-[75%] md:h-[60%] md:w-[40%] 
@@ -83,7 +66,13 @@ function CharacterCreationModal(props) {
                     setDisplayedTraits={setDisplayedTraits}
                     setNameInputed={setNameInputed}/>
 
-                <button className="bg-teal-700 text-stone-50 w-full mt-3 rounded-md py-1 mb-6" onClick={addCharacter}>Add Character</button>
+                <AddCharacter
+                    nameInputed={nameInputed}
+                    setNameInputed={setNameInputed}
+                    selectedTraits={selectedTraits}
+                    setSelectedTraits={setSelectedTraits}
+                    setCharacters={setCharacters}
+                    setDisplayedTraits={setDisplayedTraits}/>
                 
                 <div className="self-start w-full">
                     <p>Your Characters:</p>
