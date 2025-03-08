@@ -33,6 +33,7 @@ function StoryGeneration() {
         })
         .then(res => res.json())
         .then(data => {
+            console.log(data)
             setLoadingPrompt(false)
             let split_responses
 
@@ -48,7 +49,7 @@ function StoryGeneration() {
             const clean_context_response = DOMPurify.sanitize(context_response)
             const clean_story_response = DOMPurify.sanitize(story_response)
 
-            console.log(clean_context_response, clean_story_response)
+            // console.log(clean_context_response, clean_story_response)
             
             setStoryResponse(clean_story_response)
             setResponse('<div class=text-base>' + clean_context_response + '</div>' +
@@ -59,7 +60,7 @@ function StoryGeneration() {
                         audioValues.audioPlayerRef, audioValues.setIsLoading, audioValues.isLoading, audioValues.setAudioURL)
         })
     }
-    console.log(response)
+
 
     return (
         <>

@@ -7,7 +7,8 @@ from django.http import StreamingHttpResponse
 from django.http import FileResponse
 from rest_framework import status
 
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 from gtts import gTTS
 import io
 
@@ -77,18 +78,15 @@ def generate_story(request):
 
     gemini_api_key = os.getenv('GEMINI_API_KEY')
 
-    genai.configure(api_key=gemini_api_key)
-
-    model = genai.GenerativeModel(
-        model_name="gemini-2.0-flash",
-        system_instruction= """You are only telling a story only in Japanese, no other languages will ever be used for the story, 
-                                do not translate it. Also, at the very start of your response please generate the following in English to help 
-                                Japanese language learners understand the story:
-                                1. A short, clear title in English to indicate the story's topic and genre you chose.
-                                2. A brief (1-2 sentence) introductory paragraph in English to provide essential context and set the scene for beginner learners.
-                                Separate this context your providing at the start and the japanese story with the marker "%%%%". This is essential.
-                                """)
-        
+    client = genai.Client(api_key=gemini_api_key)
+    
+    instructions = """You are only telling a story only in Japanese, no other languages will ever be used for the story, 
+                    do not translate it. Also, at the very start of your response please generate the following in English to help 
+                    Japanese language learners understand the story:
+                    1. A short, clear title in English to indicate the story's topic and genre you chose.
+                    2. A brief (1-2 sentence) introductory paragraph in English to provide essential context and set the scene for beginner learners.
+                    Separate this context your providing at the start and the japanese story with the marker "%%%%". This is essential.
+                    """
         
     # print(genre, random_theme, random_names, random_starting_situation, random_locations)
     prompt = f"""Generate a short story in Japanese for language learners at the JLPT {story_settings['difficulty']} level, 
@@ -104,19 +102,21 @@ def generate_story(request):
                 Please make the story engaging and interesting for a Japanese language learner, ensuring it's original and not repetitive.
                 {characters_prompt} If new characters are added to the story, 
                 please introduce them in a way that makes it clear who they are and how they relate to the main character.
-                When referring to characters, please use appropriate Japanese honorific suffixes after their names, but don't use kanji for these suffixes.
+                When referring to characters, please use appropriate Japanese honorific suffixes after their names, but don't use kanji for these suffixes, only use hiragana for them.
                 Strive for natural and contextually reasonable honorific usage.
                 Make names bolded everytime a name shows up. Do not use any kanji for character names.
                 {words_to_learn_prompt} Make sure to break up the story into small paragraphs to make it easier to read.
                 """
     print(prompt)
 
-    response = model.generate_content(
-        prompt,
-        generation_config = genai.GenerationConfig(
-            temperature=1.5,
-        ))
-
+    response = client.models.generate_content(
+        model="gemini-2.0-flash",
+        config=types.GenerateContentConfig(
+            system_instruction=instructions,
+            temperature=1.5,),
+        contents=[prompt],
+    )
+    
     return Response({"status": "success", 'response': response.text}, status=status.HTTP_200_OK)
 
 
