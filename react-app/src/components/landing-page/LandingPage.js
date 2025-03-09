@@ -14,10 +14,11 @@ export function setSettings(level, type, setDifficulty, setLength) {
     const settings = JSON.parse(localStorage.getItem('storySettings'))
     settings[type] = level
     localStorage.setItem('storySettings', JSON.stringify(settings))
+    
     if (type === "difficulty") {
         setDifficulty(level)
     }
-    else if (type === "length") { 
+    else if (type === "length") {
         setLength(level)
     }
 }
@@ -28,24 +29,32 @@ function LandingPage() {
     const [length, setLength] = useState("")
 
     const levels = ["PRE-N5 (~300-500 most common words)", "N5", "N4"]
+    const defaultStorySettings = {difficulty: levels[0], length: "Short", genre: "Random", 
+                                    kana: false, wordsToLearn: [], characters: []}
+
 
     useEffect(() => {
         if (!localStorage.getItem('storySettings')) {
             // all default settings
-            localStorage.setItem('storySettings', JSON.stringify({difficulty: levels[0], length: "Short", genre: "Random", 
-                                 kana: false, wordsToLearn: [], characters: [], extra: ''}))
+            localStorage.setItem('storySettings', JSON.stringify(defaultStorySettings))
             
             setDifficulty(levels[0])
             setLength("Short")
         }
         else {
-            const settings = JSON.parse(localStorage.getItem('storySettings'))
+            let settings = JSON.parse(localStorage.getItem('storySettings'))
+
+            if (Object.keys(settings).length !== Object.keys(defaultStorySettings).length) {
+                localStorage.setItem('storySettings', JSON.stringify(defaultStorySettings))
+                settings = defaultStorySettings
+             }
+
             setDifficulty(settings.difficulty)
             setLength(settings.length)
-            console.log(Object.keys(settings))
         }
     }, [])
     
+
     return (
         <div className="flex flex-col items-center overflow-x-hidden">
             <div className="flex items-center gap-3 m-2 self-start w-full">
@@ -70,7 +79,7 @@ function LandingPage() {
 
                     <DifficultyOptions 
                         difficulty={difficulty} 
-                        setDifficulty={setDifficulty} 
+                        setDifficulty={setDifficulty}
                         levels={levels} 
                         setLength={setLength}/>
 
