@@ -17,6 +17,14 @@ function StoryGeneration() {
 
     const audioValues = useAudioValues()
 
+    useEffect(() => {
+        if (localStorage.getItem('storyHistory')) {
+            const storyHistory = JSON.parse(localStorage.getItem('storyHistory'))
+            setResponse(storyHistory.displayed_response)
+            setStoryResponse(storyHistory.story_for_audio)
+        }
+    }, [])
+
     function generateStory() {
 
         setResponse('')
@@ -35,6 +43,7 @@ function StoryGeneration() {
         .then(data => {
             console.log(data)
             setLoadingPrompt(false)
+
             let split_responses
 
             split_responses = data.response.split('%%%%')
@@ -50,11 +59,13 @@ function StoryGeneration() {
             const clean_story_response = DOMPurify.sanitize(story_response)
 
             // console.log(clean_context_response, clean_story_response)
+
+            let whole_response = '<div class=text-base>' + clean_context_response + '</div>' + '<hr class="my-1">' + clean_story_response
+
+            localStorage.setItem('storyHistory', JSON.stringify({'raw_response': data.response, 'displayed_response': whole_response, 'story_for_audio': clean_story_response}))
             
             setStoryResponse(clean_story_response)
-            setResponse('<div class=text-base>' + clean_context_response + '</div>' +
-                '<hr class="my-1">' + 
-                clean_story_response)
+            setResponse(whole_response)
 
             generateAudio(clean_story_response, audioValues.setController, audioValues.controller, 
                         audioValues.audioPlayerRef, audioValues.setIsLoading, audioValues.isLoading, audioValues.setAudioURL)

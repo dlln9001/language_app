@@ -97,8 +97,16 @@ function GenerateAudio(props) {
     
     useEffect(() => {
         if (!audioValues.isLoading && !audioValues.audioURL) {
-            generateAudio(props.storyResponse, audioValues.setController, audioValues.controller, audioValues.audioPlayerRef, 
-                        audioValues.setIsLoading, audioValues.isLoading, audioValues.setAudioURL)
+            if (localStorage.getItem('storyHistory')) {
+                const storyHistory = JSON.parse(localStorage.getItem('storyHistory')) 
+                generateAudio(storyHistory.story_for_audio, audioValues.setController, audioValues.controller, audioValues.audioPlayerRef,
+                            audioValues.setIsLoading, audioValues.isLoading, audioValues.setAudioURL)
+            }
+
+            else {
+                generateAudio(props.storyResponse, audioValues.setController, audioValues.controller, audioValues.audioPlayerRef, 
+                            audioValues.setIsLoading, audioValues.isLoading, audioValues.setAudioURL)
+            }
         }
     }, [])
 

@@ -1,5 +1,6 @@
 import os
 import random
+import json
 from dotenv import load_dotenv
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -62,7 +63,7 @@ def generate_story(request):
         genre = random.sample(all_genres, 3)
     else:
         genre = story_settings['genre']
-    
+
     random_theme = random.sample(general_themes, 3)
 
     random_starting_situation = random.sample(starting_situations, 3)
