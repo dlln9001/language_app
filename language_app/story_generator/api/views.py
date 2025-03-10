@@ -92,21 +92,35 @@ def generate_story(request):
     # print(genre, random_theme, random_names, random_starting_situation, random_locations)
     prompt = f"""Generate a short story in Japanese for language learners at the JLPT {story_settings['difficulty']} level, 
                 never go higher in difficulty than {story_settings['difficulty']}, {kana_or_kanji}.
+
                 Please choose one genre from this list of genres: {genre}.
                 Please choose one theme from this list of themes: {random_theme}.
                 Please choose one location from this list of locations: {random_locations}.
                 Please choose one starting situation from this list of starting situations: {random_starting_situation}. The story should start with the situation you choose.
+
                 Ensure that the genre, theme, location, and starting situation you choose are consistent with each other and work together to create a coherent and engaging short story.  
                 The combination you will choose should make sense thematically, narratively, and fit with the correct difficulty level, 
                 but don't be afraid to choose potentially interesting or slightly unexpected combinations that could make the story more unique.
+
                 Aim for approximately {length} words in length. 
                 Please make the story engaging and interesting for a Japanese language learner, ensuring it's original and not repetitive.
+
                 {characters_prompt} If new characters are added to the story, 
                 please introduce them in a way that makes it clear who they are and how they relate to the main character.
                 When referring to characters, please use appropriate Japanese honorific suffixes after their names, but don't use kanji for these suffixes, only use hiragana for them.
                 Strive for natural and contextually reasonable honorific usage.
                 Make names bolded everytime a name shows up. Do not use any kanji for character names.
+                
                 {words_to_learn_prompt} Make sure to break up the story into small paragraphs to make it easier to read.
+                The user can also choose to continue the story if they would like to, so make sure to leave the story open-ended.
+
+                At the end of the story, in English, offer the user 2 choices for how the story could continue, and ask them to choose one of the options to continue the story.
+                Please generate the output in the following exact and crucial format, using '%%%%' as a delimiter between each and every part.  The format is:
+                `[Japanese Story Segment] %%%% [Question - specifically (for example) "What happens next?"] %%%% [Choice A] %%%% [Choice B] %%%%`
+                **It is absolutely essential that you use '%%%%' to separate each of these four parts.**
+                For example:
+                `紙には何も書いてありませんでした。Yokoはどうしますか。%%%% What happens next? %%%% Yoko searches the park hoping to discover who the note came from. %%%% Yoko decides to ask Daijiro about it as he often works in the park's administration office.`
+
                 """
     print(prompt)
 

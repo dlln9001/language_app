@@ -8,12 +8,19 @@ import { generateAudio } from "./GenerateAudio";
 
 import GenerateAudio from "./GenerateAudio";
 
+import { IoMdRadioButtonOn } from "react-icons/io";
+import { IoMdRadioButtonOff } from "react-icons/io";
+
 function StoryGeneration() {
     const [loadingPrompt, setLoadingPrompt] = useState(false)
     const [response, setResponse] = useState(`<p class="text-sm text-center md:text-base"> Highlight any Japanese word you don't know. Then, click the book icon to see its meaning! </p> 
                                             <br />
                                              こんにちは！`) // this response includes other information other just the story, but is the whole response
     const [storyResponse, setStoryResponse] = useState('こんにちは！') // story response only includes the story, so this is sent to generate audio
+    const [choiceQuestion, setChoiceQuestion] = useState('')
+    const [optionA, setOptionA] = useState('')
+    const [optionB, setOptionB] = useState('')
+    const [optionSelected, setOptionSelected] = useState('')
 
     const audioValues = useAudioValues()
 
@@ -22,6 +29,9 @@ function StoryGeneration() {
             const storyHistory = JSON.parse(localStorage.getItem('storyHistory'))
             setResponse(storyHistory.displayed_response)
             setStoryResponse(storyHistory.story_for_audio)
+            setChoiceQuestion(storyHistory.choice_question)
+            setOptionA(storyHistory.option_a)
+            setOptionB(storyHistory.option_b)
         }
     }, [])
 
@@ -48,21 +58,34 @@ function StoryGeneration() {
 
             split_responses = data.response.split('%%%%')
 
-            if (split_responses.length != 2) {
+            console.log(split_responses, 'split responses')
+
+            if (split_responses.length != 5) {
                 split_responses = ['Error parsing, wrong audio will be produced', data.response]
             }
 
             let context_response = marked.parse(split_responses[0])
             let story_response = marked.parse(split_responses[1])
+            let choice_question = marked.parse(split_responses[2])
+            let option_a = marked.parse(split_responses[3])
+            let option_b = marked.parse(split_responses[4])
 
             const clean_context_response = DOMPurify.sanitize(context_response)
             const clean_story_response = DOMPurify.sanitize(story_response)
+            const clean_choice_question = DOMPurify.sanitize(choice_question)
+            const clean_option_a = DOMPurify.sanitize(option_a)
+            const clean_option_b = DOMPurify.sanitize(option_b)
 
             // console.log(clean_context_response, clean_story_response)
 
             let whole_response = '<div class=text-base>' + clean_context_response + '</div>' + '<hr class="my-1">' + clean_story_response
+            
+            setChoiceQuestion(clean_choice_question)
+            setOptionA(clean_option_a)
+            setOptionB(clean_option_b)
 
-            localStorage.setItem('storyHistory', JSON.stringify({'raw_response': data.response, 'displayed_response': whole_response, 'story_for_audio': clean_story_response}))
+            localStorage.setItem('storyHistory', JSON.stringify({'raw_response': data.response, 'displayed_response': whole_response, 'story_for_audio': clean_story_response,
+                                                                'choice_question': clean_choice_question, 'option_a': clean_option_a, 'option_b': clean_option_b}))
             
             setStoryResponse(clean_story_response)
             setResponse(whole_response)
@@ -94,9 +117,57 @@ function StoryGeneration() {
             </button>
             
             <p  id='story-text-area'
-                className=" bg-stone-50 mt-4 text-lg md:text-2xl w-full h-full mb-40 flex flex-col gap-5 md:gap-9"
+                className=" bg-stone-50 mt-4 text-lg md:text-2xl w-full h-full flex flex-col gap-5 md:gap-9 mb-7"
                 dangerouslySetInnerHTML={{__html: response}}>
             </p>
+            
+            {response && 
+                <div className="text-base flex flex-col gap-4">
+                    <p dangerouslySetInnerHTML={{__html: choiceQuestion}} className="mb-3"></p>
+
+                    <div className="flex gap-2 items-center cursor-pointer" onClick={() => setOptionSelected("A")}>
+                        <div className="text-lg text-teal-700 mr-2">
+                            {optionSelected === "A" 
+                            ?
+                                <IoMdRadioButtonOn/>
+                            : 
+                                <IoMdRadioButtonOff/>
+                            }
+                        </div>
+                        <p dangerouslySetInnerHTML={{__html: optionA}}></p>
+                    </div>
+
+                    <div className="flex gap-2 items-center cursor-pointer" onClick={() => setOptionSelected("B")}>
+                        <div className="text-lg text-teal-700 mr-2">
+                            {optionSelected === "B" 
+                            ?
+                                <IoMdRadioButtonOn/>
+                            : 
+                                <IoMdRadioButtonOff/>
+                            }
+                        </div>
+                        <p dangerouslySetInnerHTML={{__html: optionB}}></p>
+                    </div>
+
+                    <div className="flex gap-2 items-center cursor-pointer" onClick={() => setOptionSelected("C")}>
+                        <div className="text-lg text-teal-700 mr-2">
+                            {optionSelected === "C" 
+                            ?
+                                <IoMdRadioButtonOn/>
+                            : 
+                                <IoMdRadioButtonOff/>
+                            }
+                        </div>
+                        <p>No preference</p>
+                    </div>
+                </div>
+            }
+
+            {(localStorage.getItem('storyHistory') && !loadingPrompt) &&
+                <button className="bg-teal-700 text-stone-50 rounded-md w-full mt-6 md:text-lg font-semibold hover:bg-teal-800" >continue story</button>
+            }
+
+            <hr className="mb-40"/>
         
             {loadingPrompt && 
                 <div role="status" className="mb-40">
