@@ -85,7 +85,8 @@ def generate_story(request):
                     do not translate it. Also, at the very start of your response please generate the following in English to help 
                     Japanese language learners understand the story:
                     1. A short, clear title in English to indicate the story's topic and genre you chose.
-                    2. A brief (1-2 sentence) introductory paragraph in English to provide essential context and set the scene for beginner learners.
+                    2. A brief (1-2 sentence) introductory paragraph in English to provide essential context and set the scene for beginner learners, 
+                    but do not ever mention the starting situation.
                     Separate this context your providing at the start and the japanese story with the marker "%%%%". This is essential.
                     """
         
@@ -107,10 +108,11 @@ def generate_story(request):
 
                 {characters_prompt} If new characters are added to the story, 
                 please introduce them in a way that makes it clear who they are and how they relate to the main character.
-                When referring to characters, please use appropriate Japanese honorific suffixes after their names, but don't use kanji for these suffixes, only use hiragana for them.
+                When referring to characters, please use appropriate Japanese honorific suffixes after their names, but NEVER use kanji for these suffixes, only use hiragana for them.
+                For example, using さん or くん and not 君. 
                 Strive for natural and contextually reasonable honorific usage.
                 Make names bolded everytime a name shows up. Do not use any kanji for character names.
-                
+
                 {words_to_learn_prompt} Make sure to break up the story into small paragraphs to make it easier to read.
                 The user can also choose to continue the story if they would like to, so make sure to leave the story open-ended.
 
@@ -133,6 +135,12 @@ def generate_story(request):
     )
     
     return Response({"status": "success", 'response': response.text}, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+def continue_story(request):
+    print(request.data)
+    return Response({"status": "success"}, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])

@@ -5,6 +5,7 @@ import DOMPurify from 'dompurify';
 import { marked } from 'marked';
 
 import { generateAudio } from "./GenerateAudio";
+import { extractTextFromHTML } from "./GenerateAudio";
 
 import GenerateAudio from "./GenerateAudio";
 
@@ -61,7 +62,7 @@ function StoryGeneration() {
             console.log(split_responses, 'split responses')
 
             if (split_responses.length != 5) {
-                split_responses = ['Error parsing, wrong audio will be produced', data.response]
+                split_responses = ['Error parsing, regenerate story for no errors', data.response]
             }
 
             let context_response = marked.parse(split_responses[0])
@@ -83,6 +84,7 @@ function StoryGeneration() {
             setChoiceQuestion(clean_choice_question)
             setOptionA(clean_option_a)
             setOptionB(clean_option_b)
+            setOptionSelected('')
 
             localStorage.setItem('storyHistory', JSON.stringify({'raw_response': data.response, 'displayed_response': whole_response, 'story_for_audio': clean_story_response,
                                                                 'choice_question': clean_choice_question, 'option_a': clean_option_a, 'option_b': clean_option_b}))
@@ -93,6 +95,42 @@ function StoryGeneration() {
             generateAudio(clean_story_response, audioValues.setController, audioValues.controller, 
                         audioValues.audioPlayerRef, audioValues.setIsLoading, audioValues.isLoading, audioValues.setAudioURL)
         })
+    }
+
+    function continueStory() {
+        let option = ''
+
+        if (optionSelected === 'A') {
+            option = optionA
+        }
+        else if (optionSelected === 'B') {
+            option = optionB
+        }
+        else if (optionSelected === 'C') {
+            if (Math.random() < 0.5) {
+                option = optionA
+            }
+            else {
+                option = optionB
+            }
+        }
+
+        option = extractTextFromHTML(option)
+
+        let raw_response = JSON.parse(localStorage.getItem('storyHistory')).raw_response
+
+        fetch(`${process.env.REACT_APP_API_BASE_URL}/story-generator/continue-story/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                option_selected: option,
+                raw_response: raw_response
+            })
+        })
+        .then(res => res.json())
+        .then(data => console.log(data, 'this is the continue story data'))
     }
 
 
@@ -164,7 +202,7 @@ function StoryGeneration() {
             }
 
             {(localStorage.getItem('storyHistory') && !loadingPrompt) &&
-                <button className="bg-teal-700 text-stone-50 rounded-md w-full mt-6 md:text-lg font-semibold hover:bg-teal-800" >continue story</button>
+                <button className="bg-teal-700 text-stone-50 rounded-md w-full mt-6 md:text-lg font-semibold hover:bg-teal-800" onClick={continueStory}>continue story</button>
             }
 
             <hr className="mb-40"/>
