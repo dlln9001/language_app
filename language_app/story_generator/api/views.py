@@ -18,47 +18,58 @@ from .story_data import *
 
 load_dotenv()
 
-@api_view(['POST'])
-def generate_story(request):
-    # generate story based on user input
-    story_settings = request.data['story_settings']
-    print(story_settings)
+kana_prompt = 'use only kana (hiragana or katakana) for all words, do NOT ever use any kanji at all.'
+kanji_prompt = """use kanji, do NOT provide furigana. 
+                And DO NOT EVER provide the hiragana in parenthesis after the kanji. The text you produce goes through a tts, and it will repeat the words.
+                Example of Desired Output (Correct - NO Furigana):
+                広い台所で、青いリボンがついた鍵を見つけました。それはとてもきれいでした。
+                Example of Incorrect Output (AVOID this - Furigana is NOT wanted):
+                広（ひろ）い台所（だいどころ）で、青（あお）いリボンがついた鍵（かぎ）を見（み）つけました。 <-- DO NOT DO THIS!"""
 
+def words_to_learn_func(words_to_learn):
+    words_to_learn_prompt = f"""Please try your best to include the following japanese words in the story: {words_to_learn} 
+                            (even if they may be harder than the indicated difficulty). If a word is not japanese, do not use it."""
+    return words_to_learn_prompt
+
+def characters_func(created_characters):
     random_names = random.sample(all_japanese_names, 4)
-
-    created_characters = story_settings['characters']
 
     if created_characters:
         characters_prompt = f"""Use these characters in the story, each character has a name, along with some traits: {created_characters}. 
-                                Use name exactly, if it's in romaji, use romaji, if it's katakana use katakana, etc. 
-                                If you want to include additional characters beyond {created_characters} (like if there's not enough characters), 
-                                You can optionally use names from this list: {random_names}. Only add extra characters if it naturally fits the story and enhances engagement.  
-                                For very short stories, it's often best to keep the number of characters limited to maintain focus."""
+                        Use name exactly, if it's in romaji, use romaji, if it's katakana use katakana, etc. 
+                        If you want to include additional characters beyond {created_characters} (like if there's not enough characters), 
+                        You can optionally use names from this list: {random_names}. Only add extra characters if it naturally fits the story and enhances engagement.  
+                        For very short stories, it's often best to keep the number of characters limited to maintain focus."""
     else:
         characters_prompt = f"""For characters, you can use names from this list if you need ideas: {random_names}. 
                                 Only add extra characters if it naturally fits the story and enhances engagement.  
                                 For very short stories, it's often best to keep the number of characters limited to maintain focus"""
+    
+    return characters_prompt
 
+@api_view(['POST'])
+def generate_story(request):
+    # generate story based on user input
+    story_settings = request.data['story_settings']
+
+    # choose characters
+    created_characters = story_settings['characters']
+    characters_prompt = characters_func(created_characters)
+
+    # get words to learn
     if story_settings['wordsToLearn']:
         words_to_learn = story_settings['wordsToLearn']
-        words_to_learn_prompt = f"""Please try your best to include the following japanese words in the story: {words_to_learn} 
-                                (even if they may be harder than the indicated difficulty). If a word is not japanese, do not use it."""
+        words_to_learn_prompt = words_to_learn_func(words_to_learn)
     else:
         words_to_learn_prompt = ''
 
+    # choose kana or kanji
     if story_settings['kana']:
-        kana_or_kanji = 'use only kana (hiragana or katakana) for all words, do NOT ever use any kanji at all.'
+        kana_or_kanji = kana_prompt
     else:
-        kana_or_kanji = """use kanji, do NOT provide furigana. 
-                            And DO NOT EVER provide the hiragana in parenthesis after the kanji. The text you produce goes through a tts, and it will repeat the words.
-                            Example of Desired Output (Correct - NO Furigana):
-                            広い台所で、青いリボンがついた鍵を見つけました。それはとてもきれいでした。
-                            Example of Incorrect Output (AVOID this - Furigana is NOT wanted):
-                            広（ひろ）い台所（だいどころ）で、青（あお）いリボンがついた鍵（かぎ）を見（み）つけました。 <-- DO NOT DO THIS!"""
+        kana_or_kanji = kanji_prompt
 
-    # if story_settings['charactersName'].lower() in blacklist:
-    #     character_name = 'John Doe'
-
+    # choose genre, theme, starting situation, location
     if story_settings['genre'] == 'Random':
         genre = random.sample(all_genres, 3)
     else:
@@ -70,6 +81,7 @@ def generate_story(request):
 
     random_locations = random.sample(story_settings_locations, 3)
 
+    # get length of story
     if story_settings['length'] == 'Short':
         length = 75
     elif story_settings['length'] == 'Medium':
@@ -124,7 +136,7 @@ def generate_story(request):
                 `紙には何も書いてありませんでした。Yokoはどうしますか。%%%% What happens next? %%%% Yoko searches the park hoping to discover who the note came from. %%%% Yoko decides to ask Daijiro about it as he often works in the park's administration office.`
 
                 """
-    print(prompt)
+    # print(prompt)
 
     response = client.models.generate_content(
         model="gemini-2.0-flash",
@@ -139,8 +151,56 @@ def generate_story(request):
 
 @api_view(['POST'])
 def continue_story(request):
-    print(request.data)
-    return Response({"status": "success"}, status=status.HTTP_200_OK)
+    option_selected = request.data['option_selected']
+    whole_story = request.data['raw_response']
+    story_settings = request.data['story_settings']
+
+    # choose characters
+    created_characters = story_settings['characters']
+    characters_prompt = characters_func(created_characters)
+
+    # get words to learn
+    if story_settings['wordsToLearn']:
+        words_to_learn = story_settings['wordsToLearn']
+        words_to_learn_prompt = words_to_learn_func(words_to_learn)
+    else:
+        words_to_learn_prompt = ''
+
+    # choose kana or kanji
+    if story_settings['kana']:
+        kana_or_kanji = kana_prompt
+    else:
+        kana_or_kanji = kanji_prompt
+
+    # get length of story
+    if story_settings['length'] == 'Short':
+        length = 75
+    elif story_settings['length'] == 'Medium':
+        length = 150
+    elif story_settings['length'] == 'Long':
+        length = 250
+
+
+
+    gemini_api_key = os.getenv('GEMINI_API_KEY')
+
+    client = genai.Client(api_key=gemini_api_key)
+
+    instructions = """You are only telling a story only in Japanese, no other languages will ever be used for the story, 
+                        do not translate it, do not provide any English context at the start of the story. Continue the story from where it left off."""
+
+    prompt_continue = f"""test"""
+
+    response = client.models.generate_content(
+        model="gemini-2.0-flash",
+        config=types.GenerateContentConfig(
+            system_instruction=instructions,
+            temperature=1.5,),
+        contents=[prompt_continue],
+    )
+
+
+    return Response({"status": "success", 'response': response.text}, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])

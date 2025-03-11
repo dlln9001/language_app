@@ -106,7 +106,7 @@ function StoryGeneration() {
         else if (optionSelected === 'B') {
             option = optionB
         }
-        else if (optionSelected === 'C') {
+        else if (optionSelected === 'C' || optionSelected === '') {
             if (Math.random() < 0.5) {
                 option = optionA
             }
@@ -126,7 +126,8 @@ function StoryGeneration() {
             },
             body: JSON.stringify({
                 option_selected: option,
-                raw_response: raw_response
+                raw_response: raw_response,
+                story_settings: JSON.parse(localStorage.getItem('storySettings'))
             })
         })
         .then(res => res.json())
