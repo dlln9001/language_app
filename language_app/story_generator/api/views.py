@@ -26,6 +26,15 @@ kanji_prompt = """use kanji, do NOT provide furigana.
                 Example of Incorrect Output (AVOID this - Furigana is NOT wanted):
                 広（ひろ）い台所（だいどころ）で、青（あお）いリボンがついた鍵（かぎ）を見（み）つけました。 <-- DO NOT DO THIS!"""
 
+offer_options_prompt = """At the end of the story, in English, offer the user 2 choices for how the story could continue, 
+                        and ask them to choose one of the options to continue the story.
+                        Please generate the output in the following exact and crucial format, using '%%%%' as a delimiter between each and every part.  The format is:
+                        `[Japanese Story Segment] %%%% [Question - specifically (for example) "What happens next?"] %%%% [Choice A] %%%% [Choice B] %%%%`
+                        It is absolutely essential that you use '%%%%' to separate each of these four parts.
+                        For example:
+                        `紙には何も書いてありませんでした。Yokoはどうしますか。%%%% What happens next? %%%% Yoko searches the park hoping to discover who the note came from. 
+                        %%%% Yoko decides to ask Daijiro about it as he often works in the park's administration office.`"""
+
 def words_to_learn_func(words_to_learn):
     words_to_learn_prompt = f"""Please try your best to include the following japanese words in the story: {words_to_learn} 
                             (even if they may be harder than the indicated difficulty). If a word is not japanese, do not use it."""
@@ -43,7 +52,14 @@ def characters_func(created_characters):
     else:
         characters_prompt = f"""For characters, you can use names from this list if you need ideas: {random_names}. 
                                 Only add extra characters if it naturally fits the story and enhances engagement.  
-                                For very short stories, it's often best to keep the number of characters limited to maintain focus"""
+                                For very short stories, it's often best to keep the number of characters limited to maintain focus."""
+    
+    characters_prompt += """ If new characters are added to the story, 
+                            please introduce them in a way that makes it clear who they are and how they relate to the main character.
+                            When referring to characters, please use appropriate Japanese honorific suffixes after their names, but NEVER use kanji for these suffixes, 
+                            only use hiragana for them. For example, using さん or くん and not 君. 
+                            Strive for natural and contextually reasonable honorific usage.
+                            Make names bolded everytime a name shows up. Do not use any kanji for character names."""
     
     return characters_prompt
 
@@ -101,6 +117,8 @@ def generate_story(request):
                     but do not ever mention the starting situation.
                     Separate this context your providing at the start and the japanese story with the marker "%%%%". This is essential.
                     """
+    
+    print(characters_prompt, 'asd;lfkjlkj')
         
     # print(genre, random_theme, random_names, random_starting_situation, random_locations)
     prompt = f"""Generate a short story in Japanese for language learners at the JLPT {story_settings['difficulty']} level, 
@@ -118,23 +136,12 @@ def generate_story(request):
                 Aim for approximately {length} words in length. 
                 Please make the story engaging and interesting for a Japanese language learner, ensuring it's original and not repetitive.
 
-                {characters_prompt} If new characters are added to the story, 
-                please introduce them in a way that makes it clear who they are and how they relate to the main character.
-                When referring to characters, please use appropriate Japanese honorific suffixes after their names, but NEVER use kanji for these suffixes, only use hiragana for them.
-                For example, using さん or くん and not 君. 
-                Strive for natural and contextually reasonable honorific usage.
-                Make names bolded everytime a name shows up. Do not use any kanji for character names.
+                {characters_prompt} 
 
                 {words_to_learn_prompt} Make sure to break up the story into small paragraphs to make it easier to read.
                 The user can also choose to continue the story if they would like to, so make sure to leave the story open-ended.
 
-                At the end of the story, in English, offer the user 2 choices for how the story could continue, and ask them to choose one of the options to continue the story.
-                Please generate the output in the following exact and crucial format, using '%%%%' as a delimiter between each and every part.  The format is:
-                `[Japanese Story Segment] %%%% [Question - specifically (for example) "What happens next?"] %%%% [Choice A] %%%% [Choice B] %%%%`
-                **It is absolutely essential that you use '%%%%' to separate each of these four parts.**
-                For example:
-                `紙には何も書いてありませんでした。Yokoはどうしますか。%%%% What happens next? %%%% Yoko searches the park hoping to discover who the note came from. %%%% Yoko decides to ask Daijiro about it as he often works in the park's administration office.`
-
+                {offer_options_prompt}
                 """
     # print(prompt)
 
@@ -189,7 +196,15 @@ def continue_story(request):
     instructions = """You are only telling a story only in Japanese, no other languages will ever be used for the story, 
                         do not translate it, do not provide any English context at the start of the story. Continue the story from where it left off."""
 
-    prompt_continue = f"""test"""
+    prompt_continue = f"""Continue the story from where it left off. This is the story you will be continuing: {whole_story}. 
+                        The user had the option to choose between two choices to change the story, and this is what they chose to what will happen next: {option_selected}.
+                        Aim for approximately {length} words in length.
+                        {kana_or_kanji} {characters_prompt} {words_to_learn_prompt} 
+                        
+                        Make sure to break up the story into small paragraphs to make it easier to read.
+                        The user can also choose to continue the story if they would like to, so make sure to leave the story open-ended.
+                        
+                        {offer_options_prompt} Do not put the '%%%%' marker anywhere else in the story. Only those four parts"""
 
     response = client.models.generate_content(
         model="gemini-2.0-flash",

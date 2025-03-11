@@ -52,14 +52,12 @@ function StoryGeneration() {
         })
         .then(res => res.json())
         .then(data => {
-            console.log(data)
+            // console.log(data)
             setLoadingPrompt(false)
 
             let split_responses
 
             split_responses = data.response.split('%%%%')
-
-            console.log(split_responses, 'split responses')
 
             if (split_responses.length != 5) {
                 split_responses = ['Error parsing, regenerate story for no errors', data.response]
@@ -119,6 +117,8 @@ function StoryGeneration() {
 
         let raw_response = JSON.parse(localStorage.getItem('storyHistory')).raw_response
 
+        setLoadingPrompt(true)
+
         fetch(`${process.env.REACT_APP_API_BASE_URL}/story-generator/continue-story/`, {
             method: 'POST',
             headers: {
@@ -131,7 +131,50 @@ function StoryGeneration() {
             })
         })
         .then(res => res.json())
-        .then(data => console.log(data, 'this is the continue story data'))
+        .then(data => {
+            // console.log(data, 'this is the continue story data')
+
+            setLoadingPrompt(false)
+
+            let split_responses
+
+            split_responses = data.response.split('%%%%')
+
+            if (split_responses.length != 4) {
+                split_responses = ['Error parsing, regenerate story for no errors', data.response]
+            }
+
+            console.log(split_responses.length, data)
+
+            let story_response = marked.parse(split_responses[0])
+            let choice_question = marked.parse(split_responses[1])
+            let option_a = marked.parse(split_responses[2])
+            let option_b = marked.parse(split_responses[3])
+
+            const clean_story_response = DOMPurify.sanitize(story_response)
+            const clean_choice_question = DOMPurify.sanitize(choice_question)
+            const clean_option_a = DOMPurify.sanitize(option_a)
+            const clean_option_b = DOMPurify.sanitize(option_b)
+
+            let whole_continue_response = response + clean_story_response
+
+            let story_history = JSON.parse(localStorage.getItem('storyHistory'))
+
+            let raw_response = story_history.raw_response
+            let whole_response = story_history.whole_response
+
+            localStorage.setItem('storyHistory', JSON.stringify({'raw_response': raw_response + data.response, 'displayed_response': whole_response + clean_story_response, 
+                'story_for_audio': clean_story_response, 'choice_question': clean_choice_question, 'option_a': clean_option_a, 'option_b': clean_option_b}))
+
+
+            setChoiceQuestion(clean_choice_question)
+            setOptionA(clean_option_a)
+            setOptionB(clean_option_b)
+            setOptionSelected('')
+
+
+            setResponse(whole_continue_response)
+        })
     }
 
 
