@@ -16,7 +16,7 @@ function StoryGeneration() {
     const [loadingPrompt, setLoadingPrompt] = useState(false)
     const [response, setResponse] = useState(`<p class="text-sm text-center md:text-base"> Highlight any Japanese word you don't know. Then, click the book icon to see its meaning! </p> 
                                             <br />
-                                             こんにちは！`) // this response includes other information other just the story, but is the whole response
+                                             こんにちは！`) // this response includes other information other just the story, but is the whole response that is displayed
     const [storyResponse, setStoryResponse] = useState('こんにちは！') // story response only includes the story, so this is sent to generate audio
     const [choiceQuestion, setChoiceQuestion] = useState('')
     const [optionA, setOptionA] = useState('')
@@ -36,9 +36,15 @@ function StoryGeneration() {
         }
     }, [])
 
-    function generateStory() {
+    function generateStory(reseted=false) {
+        let sorry_message = 'Sorry for the wait!'
 
-        setResponse('')
+        if (!reseted) {
+            // console.log('reseting response', response)
+            setResponse('')
+        }
+
+        setChoiceQuestion('')
         setLoadingPrompt(true)
         
         fetch(`${process.env.REACT_APP_API_BASE_URL}/story-generator/generate-story/`, {
@@ -61,37 +67,44 @@ function StoryGeneration() {
 
             if (split_responses.length != 5) {
                 split_responses = ['Error parsing, regenerate story for no errors', data.response]
+                setResponse(sorry_message)
+                setChoiceQuestion('')
+                setOptionA('')
+                setOptionB('')
+                generateStory(reseted=true)
+            }
+            else {
+                let context_response = marked.parse(split_responses[0])
+                let story_response = marked.parse(split_responses[1])
+                let choice_question = marked.parse(split_responses[2])
+                let option_a = marked.parse(split_responses[3])
+                let option_b = marked.parse(split_responses[4])
+    
+                const clean_context_response = DOMPurify.sanitize(context_response)
+                const clean_story_response = DOMPurify.sanitize(story_response)
+                const clean_choice_question = DOMPurify.sanitize(choice_question)
+                const clean_option_a = DOMPurify.sanitize(option_a)
+                const clean_option_b = DOMPurify.sanitize(option_b)
+    
+                // console.log(clean_context_response, clean_story_response)
+    
+                let whole_response = '<div class=text-base>' + clean_context_response + '</div>' + '<hr class="my-1">' + clean_story_response
+                
+                setChoiceQuestion(clean_choice_question)
+                setOptionA(clean_option_a)
+                setOptionB(clean_option_b)
+                setOptionSelected('')
+    
+                localStorage.setItem('storyHistory', JSON.stringify({'raw_response': data.response, 'displayed_response': whole_response, 'story_for_audio': clean_story_response,
+                                                                    'choice_question': clean_choice_question, 'option_a': clean_option_a, 'option_b': clean_option_b}))
+                
+                setStoryResponse(clean_story_response)
+                setResponse(whole_response)
+    
+                generateAudio(clean_story_response, audioValues.setController, audioValues.controller, 
+                            audioValues.audioPlayerRef, audioValues.setIsLoading, audioValues.isLoading, audioValues.setAudioURL)
             }
 
-            let context_response = marked.parse(split_responses[0])
-            let story_response = marked.parse(split_responses[1])
-            let choice_question = marked.parse(split_responses[2])
-            let option_a = marked.parse(split_responses[3])
-            let option_b = marked.parse(split_responses[4])
-
-            const clean_context_response = DOMPurify.sanitize(context_response)
-            const clean_story_response = DOMPurify.sanitize(story_response)
-            const clean_choice_question = DOMPurify.sanitize(choice_question)
-            const clean_option_a = DOMPurify.sanitize(option_a)
-            const clean_option_b = DOMPurify.sanitize(option_b)
-
-            // console.log(clean_context_response, clean_story_response)
-
-            let whole_response = '<div class=text-base>' + clean_context_response + '</div>' + '<hr class="my-1">' + clean_story_response
-            
-            setChoiceQuestion(clean_choice_question)
-            setOptionA(clean_option_a)
-            setOptionB(clean_option_b)
-            setOptionSelected('')
-
-            localStorage.setItem('storyHistory', JSON.stringify({'raw_response': data.response, 'displayed_response': whole_response, 'story_for_audio': clean_story_response,
-                                                                'choice_question': clean_choice_question, 'option_a': clean_option_a, 'option_b': clean_option_b}))
-            
-            setStoryResponse(clean_story_response)
-            setResponse(whole_response)
-
-            generateAudio(clean_story_response, audioValues.setController, audioValues.controller, 
-                        audioValues.audioPlayerRef, audioValues.setIsLoading, audioValues.isLoading, audioValues.setAudioURL)
         })
     }
 
@@ -142,38 +155,42 @@ function StoryGeneration() {
 
             if (split_responses.length != 4) {
                 split_responses = ['Error parsing, regenerate story for no errors', data.response]
+                setResponse(response + 'Sorry for the wait!')
+                continueStory()
+            }
+            else {
+                console.log(data)
+    
+                let story_response = marked.parse(split_responses[0])
+                let choice_question = marked.parse(split_responses[1])
+                let option_a = marked.parse(split_responses[2])
+                let option_b = marked.parse(split_responses[3])
+    
+                const clean_story_response = DOMPurify.sanitize(story_response)
+                const clean_choice_question = DOMPurify.sanitize(choice_question)
+                const clean_option_a = DOMPurify.sanitize(option_a)
+                const clean_option_b = DOMPurify.sanitize(option_b)
+    
+                let whole_continue_response = response + clean_story_response
+    
+                let story_history = JSON.parse(localStorage.getItem('storyHistory'))
+    
+                let raw_response = story_history.raw_response
+                let displayed_response = story_history.displayed_response
+    
+                localStorage.setItem('storyHistory', JSON.stringify({'raw_response': raw_response + data.response, 'displayed_response': displayed_response + clean_story_response, 
+                    'story_for_audio': clean_story_response, 'choice_question': clean_choice_question, 'option_a': clean_option_a, 'option_b': clean_option_b}))
+    
+    
+                setChoiceQuestion(clean_choice_question)
+                setOptionA(clean_option_a)
+                setOptionB(clean_option_b)
+                setOptionSelected('')
+    
+    
+                setResponse(whole_continue_response)
             }
 
-            console.log(split_responses.length, data)
-
-            let story_response = marked.parse(split_responses[0])
-            let choice_question = marked.parse(split_responses[1])
-            let option_a = marked.parse(split_responses[2])
-            let option_b = marked.parse(split_responses[3])
-
-            const clean_story_response = DOMPurify.sanitize(story_response)
-            const clean_choice_question = DOMPurify.sanitize(choice_question)
-            const clean_option_a = DOMPurify.sanitize(option_a)
-            const clean_option_b = DOMPurify.sanitize(option_b)
-
-            let whole_continue_response = response + clean_story_response
-
-            let story_history = JSON.parse(localStorage.getItem('storyHistory'))
-
-            let raw_response = story_history.raw_response
-            let whole_response = story_history.whole_response
-
-            localStorage.setItem('storyHistory', JSON.stringify({'raw_response': raw_response + data.response, 'displayed_response': whole_response + clean_story_response, 
-                'story_for_audio': clean_story_response, 'choice_question': clean_choice_question, 'option_a': clean_option_a, 'option_b': clean_option_b}))
-
-
-            setChoiceQuestion(clean_choice_question)
-            setOptionA(clean_option_a)
-            setOptionB(clean_option_b)
-            setOptionSelected('')
-
-
-            setResponse(whole_continue_response)
         })
     }
 
@@ -203,7 +220,7 @@ function StoryGeneration() {
                 dangerouslySetInnerHTML={{__html: response}}>
             </p>
             
-            {response && 
+            {choiceQuestion && 
                 <div className="text-base flex flex-col gap-4">
                     <p dangerouslySetInnerHTML={{__html: choiceQuestion}} className="mb-3"></p>
 

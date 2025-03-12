@@ -117,8 +117,6 @@ def generate_story(request):
                     but do not ever mention the starting situation.
                     Separate this context your providing at the start and the japanese story with the marker "%%%%". This is essential.
                     """
-    
-    print(characters_prompt, 'asd;lfkjlkj')
         
     # print(genre, random_theme, random_names, random_starting_situation, random_locations)
     prompt = f"""Generate a short story in Japanese for language learners at the JLPT {story_settings['difficulty']} level, 
@@ -197,7 +195,8 @@ def continue_story(request):
                         do not translate it, do not provide any English context at the start of the story. Continue the story from where it left off."""
 
     prompt_continue = f"""Continue the story from where it left off. This is the story you will be continuing: {whole_story}. 
-                        The user had the option to choose between two choices to change the story, and this is what they chose to what will happen next: {option_selected}.
+                        Generate the story at a JLPT {story_settings['difficulty']} level, never go higher in difficulty than {story_settings['difficulty']}
+                        The user had the option to choose between two choices to change the story, and this is what they chose what will happen next: {option_selected}.
                         Aim for approximately {length} words in length.
                         {kana_or_kanji} {characters_prompt} {words_to_learn_prompt} 
                         
