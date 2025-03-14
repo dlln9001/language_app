@@ -100,7 +100,7 @@ function GenerateAudio(props) {
 
     return (
         <>
-        <div id="generate-audio-id" 
+        <div 
             className={`text-2xl md:text-2xl w-4 h-4 ${(isPlaying && audioURL) ? 'text-teal-700' : 'text-stone-600'}`} >
             {isLoading 
             ? 
@@ -112,7 +112,7 @@ function GenerateAudio(props) {
                     <span className="sr-only">Loading...</span>
                 </div>
             :  
-            <div className=" cursor-pointer" onClick={() => {
+            <div className=" cursor-pointer" id="generate-audio-id" onClick={() => {
                 if (!audioURL) {
                     generateAudio(props.input_text, setController, controller, audioPlayerRef, setIsLoading, isLoading, setAudioURL)
                     setIsPlaying(true)
