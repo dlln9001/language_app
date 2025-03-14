@@ -29,11 +29,12 @@ kanji_prompt = """use kanji, do NOT provide furigana.
 offer_options_prompt = """At the end of the story, in English, offer the user 2 choices for how the story could continue, 
                         and ask them to choose one of the options to continue the story.
                         Please generate the output in the following exact and crucial format, using '%%%%' as a delimiter between each and every part.  The format is:
-                        `[Japanese Story Segment] %%%% [Question - specifically (for example) "What happens next?"] %%%% [Choice A] %%%% [Choice B] %%%%`
+                        `[Japanese Story Segment] %%%% [Question - specifically (for example) "What happens next?"] %%%% [Choice A] %%%% [Choice B]`
                         It is absolutely essential that you use '%%%%' to separate each of these four parts.
                         For example:
                         `紙には何も書いてありませんでした。Yokoはどうしますか。%%%% What happens next? %%%% Yoko searches the park hoping to discover who the note came from. 
-                        %%%% Yoko decides to ask Daijiro about it as he often works in the park's administration office.`"""
+                        %%%% Yoko decides to ask Daijiro about it as he often works in the park's administration office.` 
+                        keep in mind, that means there will only be three '%%%%' markers, one after the story, one after the question, and one after choice a"""
 
 def words_to_learn_func(words_to_learn):
     words_to_learn_prompt = f"""Please try your best to include the following japanese words in the story: {words_to_learn} 
@@ -203,7 +204,7 @@ def continue_story(request):
                         Make sure to break up the story into small paragraphs to make it easier to read.
                         The user can also choose to continue the story if they would like to, so make sure to leave the story open-ended.
                         
-                        {offer_options_prompt} Do not put the '%%%%' marker anywhere else in the story. Only those four parts"""
+                        {offer_options_prompt}"""
 
     response = client.models.generate_content(
         model="gemini-2.0-flash",

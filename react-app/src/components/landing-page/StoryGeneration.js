@@ -14,10 +14,12 @@ import { IoMdRadioButtonOff } from "react-icons/io";
 
 function StoryGeneration() {
     const [loadingPrompt, setLoadingPrompt] = useState(false)
-    const [response, setResponse] = useState(`<p class="text-sm text-center md:text-base"> Highlight any Japanese word you don't know. Then, click the book icon to see its meaning! </p> 
-                                            <br />
-                                             こんにちは！`) // this response includes other information other just the story, but is the whole response that is displayed
-    const [storyResponse, setStoryResponse] = useState('こんにちは！') // story response only includes the story, so this is sent to generate audio
+    // const [response, setResponse] = useState(`<p class="text-sm text-center md:text-base"> Highlight any Japanese word you don't know. Then, click the book icon to see its meaning! </p> 
+    //                                         <br />
+    //                                          こんにちは！`) // this response includes other information other just the story, but is the whole response that is displayed
+    const [contextResponse, setContextResponse] = useState(`<p class="text-sm text-center md:text-base"> Highlight any Japanese word you don't know. 
+                                                            Then, click the book icon to see its meaning! </p> <br />`)
+    const [storyResponse, setStoryResponse] = useState(['こんにちは！']) // story response only includes the story, so this is sent to generate audio
     const [choiceQuestion, setChoiceQuestion] = useState('')
     const [optionA, setOptionA] = useState('')
     const [optionB, setOptionB] = useState('')
@@ -28,7 +30,7 @@ function StoryGeneration() {
     useEffect(() => {
         if (localStorage.getItem('storyHistory')) {
             const storyHistory = JSON.parse(localStorage.getItem('storyHistory'))
-            setResponse(storyHistory.displayed_response)
+            setContextResponse(storyHistory.context_response)
             setStoryResponse(storyHistory.story_for_audio)
             setChoiceQuestion(storyHistory.choice_question)
             setOptionA(storyHistory.option_a)
@@ -37,14 +39,13 @@ function StoryGeneration() {
     }, [])
 
     function generateStory(reseted=false) {
-        let sorry_message = 'Sorry for the wait!'
 
         if (!reseted) {
-            // console.log('reseting response', response)
-            setResponse('')
+            setContextResponse('')
         }
 
         setChoiceQuestion('')
+        setStoryResponse('')
         setLoadingPrompt(true)
         
         fetch(`${process.env.REACT_APP_API_BASE_URL}/story-generator/generate-story/`, {
@@ -58,7 +59,6 @@ function StoryGeneration() {
         })
         .then(res => res.json())
         .then(data => {
-            // console.log(data)
             setLoadingPrompt(false)
 
             let split_responses
@@ -67,7 +67,6 @@ function StoryGeneration() {
 
             if (split_responses.length != 5) {
                 split_responses = ['Error parsing, regenerate story for no errors', data.response]
-                setResponse(sorry_message)
                 setChoiceQuestion('')
                 setOptionA('')
                 setOptionB('')
@@ -85,21 +84,19 @@ function StoryGeneration() {
                 const clean_choice_question = DOMPurify.sanitize(choice_question)
                 const clean_option_a = DOMPurify.sanitize(option_a)
                 const clean_option_b = DOMPurify.sanitize(option_b)
-    
-                // console.log(clean_context_response, clean_story_response)
-    
-                let whole_response = '<div class=text-base>' + clean_context_response + '</div>' + '<hr class="my-1">' + clean_story_response
-                
+                        
                 setChoiceQuestion(clean_choice_question)
                 setOptionA(clean_option_a)
                 setOptionB(clean_option_b)
                 setOptionSelected('')
     
-                localStorage.setItem('storyHistory', JSON.stringify({'raw_response': data.response, 'displayed_response': whole_response, 'story_for_audio': clean_story_response,
+                localStorage.setItem('storyHistory', JSON.stringify({'raw_response': data.response, 
+                                                                    'context_response': clean_context_response, 
+                                                                    'story_for_audio': [clean_story_response],
                                                                     'choice_question': clean_choice_question, 'option_a': clean_option_a, 'option_b': clean_option_b}))
                 
-                setStoryResponse(clean_story_response)
-                setResponse(whole_response)
+                setStoryResponse([clean_story_response])
+                setContextResponse(clean_context_response)
     
                 generateAudio(clean_story_response, audioValues.setController, audioValues.controller, 
                             audioValues.audioPlayerRef, audioValues.setIsLoading, audioValues.isLoading, audioValues.setAudioURL)
@@ -145,7 +142,6 @@ function StoryGeneration() {
         })
         .then(res => res.json())
         .then(data => {
-            // console.log(data, 'this is the continue story data')
 
             setLoadingPrompt(false)
 
@@ -155,11 +151,12 @@ function StoryGeneration() {
 
             if (split_responses.length != 4) {
                 split_responses = ['Error parsing, regenerate story for no errors', data.response]
-                setResponse(response + 'Sorry for the wait!')
+                console.log('failed continue story prompt - ', data.response, 'failed')
+                setContextResponse('Sorry for the wait!')
                 continueStory()
             }
             else {
-                console.log(data)
+                // console.log(data)
     
                 let story_response = marked.parse(split_responses[0])
                 let choice_question = marked.parse(split_responses[1])
@@ -170,16 +167,20 @@ function StoryGeneration() {
                 const clean_choice_question = DOMPurify.sanitize(choice_question)
                 const clean_option_a = DOMPurify.sanitize(option_a)
                 const clean_option_b = DOMPurify.sanitize(option_b)
-    
-                let whole_continue_response = response + clean_story_response
-    
+        
                 let story_history = JSON.parse(localStorage.getItem('storyHistory'))
     
                 let raw_response = story_history.raw_response
-                let displayed_response = story_history.displayed_response
-    
-                localStorage.setItem('storyHistory', JSON.stringify({'raw_response': raw_response + data.response, 'displayed_response': displayed_response + clean_story_response, 
-                    'story_for_audio': clean_story_response, 'choice_question': clean_choice_question, 'option_a': clean_option_a, 'option_b': clean_option_b}))
+                // let displayed_response = story_history.displayed_response
+                let context_response = story_history.context_response
+                let story_for_audio = story_history.story_for_audio // story for audio is a list, split each new story section
+
+                story_for_audio.push(clean_story_response)
+
+                localStorage.setItem('storyHistory', JSON.stringify({'raw_response': raw_response + data.response, 
+                                                                     'context_response': context_response, 
+                                                                     'story_for_audio': story_for_audio, 
+                                                                     'choice_question': clean_choice_question, 'option_a': clean_option_a, 'option_b': clean_option_b}))
     
     
                 setChoiceQuestion(clean_choice_question)
@@ -187,8 +188,7 @@ function StoryGeneration() {
                 setOptionB(clean_option_b)
                 setOptionSelected('')
     
-    
-                setResponse(whole_continue_response)
+                setStoryResponse(story_for_audio)
             }
 
         })
@@ -197,12 +197,12 @@ function StoryGeneration() {
 
     return (
         <>
-                <button className="mt-12 self-start">
+                {/* <button className="mt-12 self-start">
                     <GenerateAudio storyResponse={storyResponse}/>
-                </button>
+                </button> */}
 
             <button 
-                className="bg-teal-700 text-stone-50 rounded-md w-full py-1 md:py-2 mt-6 md:text-lg font-semibold hover:bg-teal-800"
+                className="bg-teal-700 text-stone-50 rounded-md w-full py-1 md:py-2 mt-12 md:text-lg font-semibold hover:bg-teal-800"
                 id="generate-story-id"
                 onClick={() => {
                     if (!loadingPrompt) {
@@ -215,10 +215,27 @@ function StoryGeneration() {
                     Generate Story
             </button>
             
-            <p  id='story-text-area'
-                className=" bg-stone-50 mt-4 text-lg md:text-2xl w-full h-full flex flex-col gap-5 md:gap-9 mb-7"
-                dangerouslySetInnerHTML={{__html: response}}>
-            </p>
+            {(contextResponse && storyResponse) &&
+                <div  id='story-text-area'
+                    className=" bg-stone-50 mt-4 text-lg md:text-2xl w-full h-full flex flex-col gap-5 md:gap-9 mb-7"
+                    >
+                        <p dangerouslySetInnerHTML={{__html: contextResponse}} className=" text-sm md:text-base"></p>
+
+                        <hr />
+
+                        {storyResponse.map((storySection, index) => {
+                            return (
+                                <div>
+                                    <div className="my-5">
+                                        <GenerateAudio/>
+
+                                    </div>
+                                    <p dangerouslySetInnerHTML={{__html: storySection}} key={index} className="flex flex-col gap-9"></p>
+                                </div>
+                            )
+                        })}
+                </div>
+            }
             
             {choiceQuestion && 
                 <div className="text-base flex flex-col gap-4">
