@@ -1,11 +1,6 @@
-import { useState } from "react";
-import { useEffect } from "react";
-import { useRef } from "react";
+import { useState, useEffect } from "react";
 
 import GenreDropdown from "./GenreDropdown";
-
-import { CiCircleInfo } from "react-icons/ci";
-
 
 function MoreOptions() {
     const [kana, setKana] = useState('loading')

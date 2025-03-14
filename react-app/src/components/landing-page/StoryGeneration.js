@@ -3,7 +3,6 @@ import { useState, useEffect } from "react"
 import DOMPurify from 'dompurify';
 import { marked } from 'marked';
 
-import { generateAudio } from "./GenerateAudio";
 import { extractTextFromHTML } from "./GenerateAudio";
 
 import GenerateAudio from "./GenerateAudio";
