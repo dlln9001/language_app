@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react"
-import { useAudioValues } from "../../contexts/AudioValuesContext";
 
 import DOMPurify from 'dompurify';
 import { marked } from 'marked';
@@ -24,8 +23,6 @@ function StoryGeneration() {
     const [optionA, setOptionA] = useState('')
     const [optionB, setOptionB] = useState('')
     const [optionSelected, setOptionSelected] = useState('')
-
-    const audioValues = useAudioValues()
 
     useEffect(() => {
         if (localStorage.getItem('storyHistory')) {
@@ -97,9 +94,7 @@ function StoryGeneration() {
                 
                 setStoryResponse([clean_story_response])
                 setContextResponse(clean_context_response)
-    
-                generateAudio(clean_story_response, audioValues.setController, audioValues.controller, 
-                            audioValues.audioPlayerRef, audioValues.setIsLoading, audioValues.isLoading, audioValues.setAudioURL)
+
             }
 
         })
@@ -207,9 +202,6 @@ function StoryGeneration() {
                 onClick={() => {
                     if (!loadingPrompt) {
                         generateStory()
-                        audioValues.setAudioURL('')
-                        audioValues.setIsPlaying(false)
-                        audioValues.audioPlayerRef.current.pause()
                     }
                 }}>
                     Generate Story
@@ -225,12 +217,12 @@ function StoryGeneration() {
 
                         {storyResponse.map((storySection, index) => {
                             return (
-                                <div>
+                                <div key={index}>
                                     <div className="my-5">
-                                        <GenerateAudio/>
-
+                                        <GenerateAudio input_text={storySection}/>
                                     </div>
-                                    <p dangerouslySetInnerHTML={{__html: storySection}} key={index} className="flex flex-col gap-9"></p>
+
+                                    <p dangerouslySetInnerHTML={{__html: storySection}} className="flex flex-col gap-9"></p>
                                 </div>
                             )
                         })}
@@ -238,7 +230,7 @@ function StoryGeneration() {
             }
             
             {choiceQuestion && 
-                <div className="text-base flex flex-col gap-4">
+                <div className="text-base flex flex-col gap-4 self-start">
                     <p dangerouslySetInnerHTML={{__html: choiceQuestion}} className="mb-3"></p>
 
                     <div className="flex gap-2 items-center cursor-pointer" onClick={() => setOptionSelected("A")}>

@@ -1,6 +1,4 @@
-import { useEffect } from "react";
-
-import { useAudioValues } from "../../contexts/AudioValuesContext";
+import { useEffect, useState, useRef } from "react";
 
 import { HiMiniSpeakerWave } from "react-icons/hi2";
 
@@ -91,41 +89,20 @@ export function generateAudio(input_text, setController, controller, audioPlayer
     })
 }
 
-function GenerateAudio(props) {    
-    const audioValues = useAudioValues()
+function GenerateAudio(props) { 
 
-    
-    useEffect(() => {
-        if (!audioValues.isLoading && !audioValues.audioURL) {
-            if (localStorage.getItem('storyHistory')) {
-                const storyHistory = JSON.parse(localStorage.getItem('storyHistory')) 
-                generateAudio(storyHistory.story_for_audio, audioValues.setController, audioValues.controller, audioValues.audioPlayerRef,
-                            audioValues.setIsLoading, audioValues.isLoading, audioValues.setAudioURL)
-            }
+    const [audioURL, setAudioURL] = useState("")
+    const [isPlaying, setIsPlaying] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
+    const [controller, setController] = useState('') // controller so you can abort fetch if needed
 
-            else {
-                generateAudio(props.storyResponse, audioValues.setController, audioValues.controller, audioValues.audioPlayerRef, 
-                            audioValues.setIsLoading, audioValues.isLoading, audioValues.setAudioURL)
-            }
-        }
-    }, [])
-
+    const audioPlayerRef = useRef(null)
 
     return (
         <>
         <div id="generate-audio-id" 
-            className={`text-2xl md:text-2xl w-4 h-4 ${(audioValues.isPlaying && audioValues.audioURL) ? 'text-teal-700' : 'text-stone-600'}`} 
-            onClick={() =>{
-            if (audioValues.isPlaying) {
-                audioValues.setIsPlaying(false)
-                audioValues.audioPlayerRef.current.pause()
-            }
-            else if (audioValues.audioURL) {
-                audioValues.setIsPlaying(true)
-                audioValues.audioPlayerRef.current.play()
-            }
-            }}>
-            {audioValues.isLoading 
+            className={`text-2xl md:text-2xl w-4 h-4 ${(isPlaying && audioURL) ? 'text-teal-700' : 'text-stone-600'}`} >
+            {isLoading 
             ? 
                 <div role="status">
                     <svg aria-hidden="true" className="w-full h-full text-gray-200 animate-spin dark:text-gray-300 fill-teal-700" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -134,14 +111,29 @@ function GenerateAudio(props) {
                     </svg>
                     <span className="sr-only">Loading...</span>
                 </div>
-            :    
-            <HiMiniSpeakerWave />
+            :  
+            <div className=" cursor-pointer" onClick={() => {
+                if (!audioURL) {
+                    generateAudio(props.input_text, setController, controller, audioPlayerRef, setIsLoading, isLoading, setAudioURL)
+                    setIsPlaying(true)
+                }
+                else if (audioPlayerRef.current.paused) {
+                    setIsPlaying(true)
+                    audioPlayerRef.current.play()
+                }
+                else if (!audioPlayerRef.current.paused) {
+                    setIsPlaying(false)
+                    audioPlayerRef.current.pause()
+                }
+            }}>
+                <HiMiniSpeakerWave />
+            </div>
             }
         </div>
         
 
         <div>
-            <audio src='' type="audio/mpeg" ref={audioValues.audioPlayerRef} onEnded={() => {audioValues.setIsPlaying(false)}}  ></audio>
+            <audio src='' type="audio/mpeg" autoPlay ref={audioPlayerRef} onEnded={() => {setIsPlaying(false)}}  ></audio>
         </div>
         
         
