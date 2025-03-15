@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 
-import MoreOptions from "./MoreOptions";
-import DifficultyOptions from "./DifficultyOptions";
-import LengthOptions from "./LengthOptions";
+import MoreOptions from "./option-types/MoreOptions";
+import DifficultyOptions from "./option-types/DifficultyOptions";
+import LengthOptions from "./option-types/LengthOptions";
 import StoryGeneration from "../story-generation/StoryGeneration";
 import MenuOptions from "../menu-options/MenuOptions";
 

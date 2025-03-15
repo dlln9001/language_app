@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-import GenreDropdown from "./GenreDropdown";
+import GenreDropdown from "../GenreDropdown";
 
 function MoreOptions() {
     const [kana, setKana] = useState('loading')

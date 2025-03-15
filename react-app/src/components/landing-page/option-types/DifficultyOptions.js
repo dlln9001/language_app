@@ -1,4 +1,4 @@
-import { setSettings } from "./LandingPage";
+import { setSettings } from "../LandingPage";
 
 function DifficultyOptions(props) {
     return (
