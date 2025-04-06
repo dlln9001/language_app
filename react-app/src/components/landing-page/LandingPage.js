@@ -77,7 +77,7 @@ function LandingPage() {
                 <p className=" text-center mt-3 text-sm md:text-xl">Learn Japanese with personalized stories. Select your level, generate a story, and read in Japanese</p>
 
                 <div className="mt-3 w-full flex flex-col items-center gap-2 md:mt-8">
-                    <p className=" font-semibold md:text-lg">Difficulty</p>
+                    <p className=" font-semibold md:text-lg" id="difficulty-header">Difficulty</p>
 
                     <DifficultyOptions
                         difficulty={difficulty}
@@ -88,7 +88,7 @@ function LandingPage() {
                 </div>
 
                 <div className="mt-3 w-full flex flex-col items-center gap-2">
-                    <p className=" font-semibold md:text-lg">Length</p>
+                    <p className=" font-semibold md:text-lg" id="length-header">Length</p>
 
                     <LengthOptions
                         setDifficulty={setDifficulty}
