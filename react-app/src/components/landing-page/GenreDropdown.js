@@ -38,24 +38,25 @@ function GenreDropdown() {
 
     return (
         <>
-                <p className=" text-sm mb-1 md:text-base">Select Genre</p>
+                <p className=" text-sm mb-1 md:text-base" id="select-genre-id">Select Genre</p>
                 <div className="w-2/3 relative">
                     <div 
                         className="border border-slate-300 rounded-md text-sm px-2 py-1 flex items-center md:text-base cursor-pointer"
                         onClick={() => setShowDropdown(!showDropdown)}
-                        ref={dropdownRef}>
+                        ref={dropdownRef}
+                        id="genre-button-id">
                         <p>{genre}</p>
                         <div className=" ml-auto mr-2">
                             <IoIosArrowDown />
                         </div>
                     </div>
                     {showDropdown &&
-                        <div className="absolute bg-stone-50 border border-slate-300 mt-1 w-full rounded-md z-10 shadow-xl">
+                        <div className="absolute bg-stone-50 border border-slate-300 mt-1 w-full rounded-md z-10 shadow-xl" id="genre-dropdown-id">
                             <p className=" text-sm px-2 py-2 hover:bg-stone-100 cursor-pointer rounded-t-md" onClick={() => setGenreSettings('Random')}>Random</p>
                             <p className=" text-sm px-2 py-2 hover:bg-stone-100 cursor-pointer" onClick={() => setGenreSettings('Slice of Life')}>Slice of Life</p>
                             <p className=" text-sm px-2 py-2 hover:bg-stone-100 cursor-pointer" onClick={() => setGenreSettings('Adventure')}>Adventure</p>
                             <p className=" text-sm px-2 py-2 hover:bg-stone-100 cursor-pointer" onClick={() => setGenreSettings('Silly')}>Silly</p>
-                            <p className=" text-sm px-2 py-2 hover:bg-stone-100 cursor-pointer rounded-b-md" onClick={() => setGenreSettings('Mystery')}>Mystery</p>
+                            <p className=" text-sm px-2 py-2 hover:bg-stone-100 cursor-pointer rounded-b-md" onClick={() => setGenreSettings('Mystery')} id="mystery-genre-id">Mystery</p>
                         </div>
                     }
                 </div>
