@@ -42,9 +42,11 @@ function WordsListModal(props) {
     }
 
     return (
-        <div className="fixed bg-stone-50 z-50 w-[85%] h-[75%] md:h-[60%] md:w-[40%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-md flex flex-col p-4 overflow-hidden">
+        <div 
+            className="fixed bg-stone-50 z-50 w-[85%] h-[75%] md:h-[60%] md:w-[40%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-md flex flex-col p-4 overflow-hidden"
+            id="words-list-modal">
 
-            <div className="ml-auto text-4xl cursor-pointer" onClick={() => props.setShowModal(0)}>
+            <div className="ml-auto text-4xl cursor-pointer" onClick={() => props.setShowModal(0)} id="close-words-modal-button">
                 <IoIosClose />
             </div>
 
@@ -60,7 +62,7 @@ function WordsListModal(props) {
                     {inputError &&
                         <p className="text-red-400 text-sm">{inputError}</p>
                     }
-                    <input type="text" value={wordInputed} 
+                    <input type="text" value={wordInputed} id="word-input"
                         onChange={(e) => setWordInputed(e.target.value)}
                         placeholder="Enter word..."
                         className="border border-stone-300 bg-stone-50 rounded-md px-3 py-1 w-full outline-none focus:border-stone-400"/>
@@ -68,7 +70,7 @@ function WordsListModal(props) {
                     ?
                     <button className="bg-slate-200 text-slate-400 w-full mt-3 rounded-md py-1 disabled">Add to List</button>
                     :
-                    <button className="bg-teal-700 text-stone-50 w-full mt-3 rounded-md py-1" onClick={addWord}>Add to List</button>
+                    <button className="bg-teal-700 text-stone-50 w-full mt-3 rounded-md py-1" onClick={addWord} id="add-to-list-button">Add to List</button>
                     }
                 </div>
 
@@ -80,8 +82,8 @@ function WordsListModal(props) {
                         {wordsList.map((word, index) => {
                             return (
                                 <div key={index} className="flex items-center gap-3 mt-3 w-full">
-                                    <p>{word}</p>
-                                    <div className="cursor-pointer ml-auto" onClick={() => removeWord(index)}>
+                                    <p id="inputted-word">{word}</p>
+                                    <div className="cursor-pointer ml-auto" onClick={() => removeWord(index)} id="remove-word-button">
                                         <IoIosClose />
                                     </div>
                                 </div>
