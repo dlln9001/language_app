@@ -24,9 +24,10 @@ function CharacterCreationModal(props) {
 
     return (
         <div className="fixed bg-stone-50 z-50 w-[85%] h-[75%] md:h-[60%] md:w-[40%] 
-                        top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-md flex flex-col p-4 overflow-auto custom-scrollbar">
+                        top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-md flex flex-col p-4 overflow-auto custom-scrollbar"
+            id="character-creation-modal">
             
-            <div className="ml-auto text-4xl cursor-pointer md:sticky md:top-0" onClick={() => props.setShowModal(0)}>
+            <div className="ml-auto text-4xl cursor-pointer md:sticky md:top-0" data-cy="close-character-modal" onClick={() => props.setShowModal(0)}>
                 <IoIosClose />
             </div>
 
@@ -44,7 +45,8 @@ function CharacterCreationModal(props) {
                             }
                         }}
                         placeholder="Enter character name..."
-                        className="border border-stone-300 bg-stone-50 rounded-md px-3 py-1 w-full outline-none focus:border-stone-400"/>
+                        className="border border-stone-300 bg-stone-50 rounded-md px-3 py-1 w-full outline-none focus:border-stone-400"
+                        id="character-name-input"/>
                 
                 {nameInputed.length === 25 &&
                     <p className="self-start text-xs text-red-500">Name too long</p>
@@ -82,7 +84,7 @@ function CharacterCreationModal(props) {
                             let displayed_traits = character.traits.join(', ')
                             return (
                                 <div key={index}>
-                                    <div className="flex items-center gap-3 mt-6 w-full cursor-pointer" 
+                                    <div className="flex items-center gap-3 mt-6 w-full cursor-pointer" id="character-button"
                                         onClick={() => {
                                             if (showCharDetails[1] != index) {
                                                 setShowCharDetails([true, index])
@@ -91,7 +93,7 @@ function CharacterCreationModal(props) {
                                                 setShowCharDetails([!showCharDetails[0], index])
                                             }
                                         }}>
-                                        <p className=" text-nowrap text-lg">{character.name}</p>
+                                        <p className=" text-nowrap text-lg" id="character-name">{character.name}</p>
                                         <p className=" text-ellipsis text-nowrap overflow-hidden text-sm text-stone-400">{displayed_traits}</p>
                                         <div className="ml-auto">
                                             {showCharDetails[0] && showCharDetails[1] === index ? 

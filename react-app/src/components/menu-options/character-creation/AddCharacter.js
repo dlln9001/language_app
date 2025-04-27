@@ -22,7 +22,7 @@ function AddCharacter(props) {
 
 
     return (
-        <button className="bg-teal-700 text-stone-50 w-full mt-3 rounded-md py-1 mb-6" onClick={addCharacter}>Add Character</button>
+        <button className="bg-teal-700 text-stone-50 w-full mt-3 rounded-md py-1 mb-6" onClick={addCharacter} id="add-character-button">Add Character</button>
     )
 }
 

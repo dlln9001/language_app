@@ -40,7 +40,7 @@ function RandomizeCharacter(props) {
     }
 
     return (
-        <button className="bg-teal-700 text-stone-50 w-full mt-5 rounded-md mb-2" onClick={randomizeCharacter}>Randomize</button>
+        <button className="bg-teal-700 text-stone-50 w-full mt-5 rounded-md mb-2" onClick={randomizeCharacter} id="randomize-character-button">Randomize</button>
     )
 }
 

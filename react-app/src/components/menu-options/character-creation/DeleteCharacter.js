@@ -16,7 +16,7 @@ function DeleteCharacter(props) {
 
 
     return (
-        <div className="border w-fit rounded-md px-7 border-red-500 cursor-pointer" onClick={deleteCharacter}>
+        <div className="border w-fit rounded-md px-7 border-red-500 cursor-pointer" onClick={deleteCharacter} id="delete-character-button">
             <p className="text-red-500 text-sm">Delete</p>
         </div>
     )
